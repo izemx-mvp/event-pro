@@ -1,0 +1,2546 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EventPro AI — Plateforme multi-agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  :root {
+    --bg: #eeedf8;
+    --bg-card: #ffffff;
+    --bg-secondary: #f5f4fb;
+    --text-primary: #1a1918;
+    --text-secondary: #6b6a66;
+    --text-tertiary: #9e9d99;
+    --border: rgba(83,74,183,0.12);
+    --border-md: rgba(83,74,183,0.20);
+    --purple-50: #EEEDFE;
+    --purple-100: #DCD9FD;
+    --purple-200: #AFA9EC;
+    --purple-600: #534AB7;
+    --purple-700: #453DA0;
+    --purple-800: #3C3489;
+    --teal-50: #E1F5EE;
+    --teal-600: #0F6E56;
+    --coral-50: #FAECE7;
+    --coral-600: #993C1D;
+    --coral-400: #D85A30;
+    --amber-50: #FAEEDA;
+    --amber-600: #854F0B;
+    --amber-400: #EF9F27;
+    --blue-50: #E6F1FB;
+    --blue-600: #185FA5;
+    --blue-400: #378ADD;
+    --green-50: #EAF3DE;
+    --green-600: #3B6D11;
+    --green-teal: #1D9E75;
+    --gray-50: #F1EFE8;
+    --gray-600: #5F5E5A;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 18px;
+    --shadow-sm: 0 1px 4px rgba(83,74,183,0.08),0 0 0 0.5px rgba(83,74,183,0.07);
+    --shadow-md: 0 4px 16px rgba(83,74,183,0.13),0 0 0 0.5px rgba(83,74,183,0.09);
+    --shadow-lg: 0 8px 32px rgba(83,74,183,0.18);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text-primary);font-size:14px;line-height:1.5;height:100vh;overflow:hidden}
+  .app{display:flex;height:100vh}
+  /* SIDEBAR */
+  .sidebar{width:242px;min-width:242px;background:linear-gradient(180deg,#231D78 0%,#2D2680 30%,#3C3489 65%,#4A41A8 100%);display:flex;flex-direction:column;overflow-y:auto;box-shadow:3px 0 24px rgba(35,29,120,0.30)}
+  .sidebar::-webkit-scrollbar{width:3px}.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:2px}
+  .logo{padding:22px 18px 18px;border-bottom:1px solid rgba(255,255,255,0.10)}
+  .logo-mark{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+  .logo-icon{width:34px;height:34px;background:linear-gradient(135deg,#8B82F0,#B0A9FF);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;box-shadow:0 2px 10px rgba(0,0,0,0.25)}
+  .logo-title{font-size:16px;font-weight:700;color:#fff;letter-spacing:-.01em}
+  .logo-sub{font-size:10px;color:rgba(255,255,255,0.45);letter-spacing:.02em}
+  .nav-section{padding:8px 0}
+  .nav-label{font-size:9px;font-weight:700;color:rgba(255,255,255,0.32);padding:6px 18px 5px;letter-spacing:.12em;text-transform:uppercase}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 18px;cursor:pointer;font-size:13px;color:rgba(255,255,255,0.62);border-left:2.5px solid transparent;transition:background .15s,color .15s,border-color .15s}
+  .nav-item:hover{background:rgba(255,255,255,0.09);color:rgba(255,255,255,0.92)}
+  .nav-item.active{background:rgba(255,255,255,0.15);color:#fff;border-left-color:#A89FFF;font-weight:600}
+  .nav-item i{font-size:16px}
+  .nav-badge{margin-left:auto;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600}
+  .nb-purple{background:rgba(255,255,255,0.18);color:#fff}
+  .nb-red{background:rgba(216,90,48,0.90);color:#fff}
+  .sidebar-footer{margin-top:auto;padding:14px 18px;border-top:1px solid rgba(255,255,255,0.10);display:flex;align-items:center;gap:10px;background:rgba(0,0,0,0.15)}
+  .avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#A89FFF,#7C73E6);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,0.22);flex-shrink:0}
+  .sidebar-user-name{font-size:12px;font-weight:700;color:#fff}
+  .sidebar-user-role{font-size:10px;color:rgba(255,255,255,0.42);margin-top:1px}
+  /* MAIN */
+  .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+  .topbar{background:var(--bg-card);border-bottom:1px solid var(--border);padding:13px 26px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 1px 10px rgba(83,74,183,0.08)}
+  .topbar-left{display:flex;flex-direction:column}
+  .page-title{font-size:16px;font-weight:700;letter-spacing:-.01em}
+  .page-sub{font-size:12px;color:var(--text-secondary);margin-top:2px}
+  .topbar-right{display:flex;align-items:center;gap:8px}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 15px;border:1px solid var(--border-md);border-radius:var(--radius-md);font-size:13px;font-weight:500;cursor:pointer;background:var(--bg-card);color:var(--text-primary);font-family:inherit;transition:background .12s,box-shadow .12s,transform .08s;box-shadow:var(--shadow-sm)}
+  .btn:hover{background:var(--bg-secondary);box-shadow:var(--shadow-md)}
+  .btn:active{transform:scale(.98)}
+  .btn i{font-size:15px}
+  .btn-primary{background:linear-gradient(135deg,var(--purple-600),var(--purple-700));color:#fff;border-color:var(--purple-700);box-shadow:0 2px 8px rgba(83,74,183,0.38)}
+  .btn-primary:hover{background:linear-gradient(135deg,var(--purple-700),var(--purple-800));box-shadow:0 4px 16px rgba(83,74,183,0.45)}
+  .btn-sm{padding:5px 10px;font-size:12px}
+  .btn-ghost{border-color:transparent;background:transparent;box-shadow:none}
+  .btn-ghost:hover{background:var(--bg-secondary);box-shadow:none}
+  /* CONTENT */
+  .content{flex:1;overflow-y:auto;padding:22px 26px}
+  .page-content{display:none}
+  .page-content.active{display:block}
+  /* METRICS */
+  .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+  .metric-card{background:var(--bg-card);border-radius:var(--radius-lg);padding:16px 18px;box-shadow:var(--shadow-sm);border:1px solid var(--border);position:relative;overflow:hidden;transition:box-shadow .2s,transform .15s}
+  .metric-card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+  .metric-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--radius-lg) var(--radius-lg) 0 0}
+  .metric-card:nth-child(1)::before{background:linear-gradient(90deg,#534AB7,#AFA9EC)}
+  .metric-card:nth-child(2)::before{background:linear-gradient(90deg,#D85A30,#FBCBB5)}
+  .metric-card:nth-child(3)::before{background:linear-gradient(90deg,#0F6E56,#7FD9B8)}
+  .metric-card:nth-child(4)::before{background:linear-gradient(90deg,#185FA5,#378ADD)}
+  .metric-label{font-size:11px;color:var(--text-secondary);margin-bottom:8px;display:flex;align-items:center;gap:5px;font-weight:500}
+  .metric-value{font-size:28px;font-weight:700;line-height:1;letter-spacing:-.02em}
+  .metric-delta{font-size:11px;margin-top:7px;font-weight:500}
+  .delta-up{color:var(--green-teal)}.delta-warn{color:var(--coral-400)}
+  /* CARDS */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;box-shadow:var(--shadow-sm);transition:box-shadow .2s}
+  .card:hover{box-shadow:var(--shadow-md)}
+  .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .card-title{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
+  .card-action{font-size:12px;color:var(--purple-600);cursor:pointer;font-weight:500}
+  .card-action:hover{text-decoration:underline}
+  /* LEADS */
+  .lead-item{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid var(--border)}
+  .lead-item:last-child{border-bottom:none;padding-bottom:0}
+  .score-ring{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;box-shadow:var(--shadow-sm)}
+  .score-hot{background:linear-gradient(135deg,#FAECE7,#F5C9B5);color:var(--coral-600);border:1.5px solid #F0997B}
+  .score-warm{background:linear-gradient(135deg,#FAEEDA,#F9D89A);color:var(--amber-600);border:1.5px solid #FAC775}
+  .score-cold{background:linear-gradient(135deg,#E6F1FB,#C0D8F4);color:var(--blue-600);border:1.5px solid #85B7EB}
+  .lead-name{font-size:13px;font-weight:600;margin-bottom:2px}
+  .lead-meta{font-size:11px;color:var(--text-secondary)}
+  .lead-tags{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap}
+  .tag{font-size:10px;padding:2px 8px;border-radius:10px;border:1px solid var(--border-md);color:var(--text-secondary);background:var(--bg-secondary);font-weight:500}
+  /* EVENTS */
+  .event-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+  .event-item:last-child{border-bottom:none}
+  .event-date-box{background:linear-gradient(135deg,var(--purple-50),var(--purple-100));border:1px solid var(--border-md);border-radius:var(--radius-md);padding:7px 9px;text-align:center;min-width:46px;flex-shrink:0;box-shadow:var(--shadow-sm)}
+  .event-day{font-size:18px;font-weight:700;line-height:1;color:var(--purple-600)}
+  .event-month{font-size:10px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+  .event-name{font-size:13px;font-weight:600;margin-bottom:2px}
+  .event-loc{font-size:11px;color:var(--text-secondary)}
+  /* BADGES */
+  .badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 9px;border-radius:20px;font-weight:600}
+  .badge i{font-size:12px}
+  .b-hot{background:linear-gradient(135deg,#FAECE7,#F5C9B5);color:var(--coral-600)}
+  .b-warm{background:linear-gradient(135deg,#FAEEDA,#F9D89A);color:var(--amber-600)}
+  .b-new{background:linear-gradient(135deg,var(--purple-50),var(--purple-100));color:var(--purple-600)}
+  .b-done{background:linear-gradient(135deg,var(--teal-50),#B3E8D5);color:var(--teal-600)}
+  .b-gray{background:var(--gray-50);color:var(--gray-600)}
+  .b-tech{background:linear-gradient(135deg,var(--blue-50),#C0D8F4);color:var(--blue-600)}
+  .b-pro{background:linear-gradient(135deg,var(--purple-50),var(--purple-100));color:var(--purple-600)}
+  .b-culture{background:linear-gradient(135deg,var(--amber-50),#F9D89A);color:var(--amber-600)}
+  .b-sport{background:linear-gradient(135deg,var(--green-50),#C4E6A5);color:var(--green-600)}
+  .dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:4px}
+  .dot-red{background:var(--coral-400);box-shadow:0 0 4px rgba(216,90,48,.5)}
+  .dot-amber{background:var(--amber-400);box-shadow:0 0 4px rgba(239,159,39,.5)}
+  .dot-blue{background:var(--blue-400);box-shadow:0 0 4px rgba(55,138,221,.5)}
+  .dot-green{background:var(--green-teal);box-shadow:0 0 4px rgba(29,158,117,.5)}
+  /* TABLE */
+  .table-wrap{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm)}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  thead th{padding:11px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--text-secondary);background:var(--bg-secondary);border-bottom:1px solid var(--border);white-space:nowrap;letter-spacing:.02em}
+  tbody td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover td{background:var(--bg-secondary)}
+  .td-name{font-weight:600;margin-bottom:2px}.td-sub{font-size:11px;color:var(--text-secondary)}
+  /* FILTER */
+  .filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+  .filter-btn{font-size:12px;padding:6px 13px;border:1px solid var(--border-md);border-radius:20px;cursor:pointer;background:var(--bg-card);color:var(--text-secondary);font-family:inherit;font-weight:500;transition:background .12s,box-shadow .12s;box-shadow:var(--shadow-sm)}
+  .filter-btn:hover{background:var(--bg-secondary);color:var(--text-primary)}
+  .filter-btn.active{background:linear-gradient(135deg,var(--purple-600),var(--purple-700));color:#fff;border-color:var(--purple-700);box-shadow:0 2px 8px rgba(83,74,183,0.38)}
+  /* PIPELINE */
+  .pipeline-row{margin-bottom:11px}
+  .pipeline-label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;font-weight:500}
+  .pipeline-bar-bg{background:var(--bg-secondary);border-radius:6px;height:8px;overflow:hidden}
+  .pipeline-bar-fill{height:8px;border-radius:6px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+  /* TIMELINE */
+  .timeline-item{display:flex;gap:12px;padding:9px 0}
+  .tl-dot{width:9px;height:9px;border-radius:50%;margin-top:4px;flex-shrink:0;box-shadow:0 0 6px rgba(0,0,0,0.18)}
+  .tl-title{font-size:12px;font-weight:600}.tl-time{font-size:11px;color:var(--text-secondary);margin-top:2px}
+  /* BANNER */
+  .info-banner{background:linear-gradient(135deg,var(--purple-50),var(--purple-100));border:1px solid var(--purple-200);border-radius:var(--radius-md);padding:12px 16px;display:flex;align-items:center;gap:12px;margin-bottom:16px;font-size:12px;box-shadow:var(--shadow-sm)}
+  .info-banner i{font-size:20px;color:var(--purple-600);flex-shrink:0}
+  .status-pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:4px 10px;border-radius:20px;font-weight:600;background:linear-gradient(135deg,var(--teal-50),#B3E8D5);color:var(--teal-600);box-shadow:var(--shadow-sm)}
+  .pulse-dot{width:7px;height:7px;border-radius:50%;background:var(--green-teal);animation:pulse 2s infinite;box-shadow:0 0 5px rgba(29,158,117,0.5)}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
+  /* AGENTS */
+  .agent-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .agent-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;transition:border-color .15s,box-shadow .2s,transform .15s;cursor:pointer;box-shadow:var(--shadow-sm);position:relative;overflow:hidden}
+  .agent-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--purple-600),var(--purple-200));opacity:0;transition:opacity .2s}
+  .agent-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px);border-color:var(--border-md)}
+  .agent-card:hover::after{opacity:1}
+  .agent-icon{width:42px;height:42px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:20px;box-shadow:var(--shadow-sm)}
+  .agent-name{font-size:13px;font-weight:700;margin-bottom:6px}
+  .agent-desc{font-size:12px;color:var(--text-secondary);line-height:1.6}
+  .agent-footer{display:flex;align-items:center;gap:6px;margin-top:13px;font-size:11px;font-weight:500}
+  /* CHAT */
+  #page-assistant{display:none;flex-direction:column;height:100%}
+  #page-assistant.active{display:flex}
+  .chat-area{flex:1;overflow-y:auto;padding:20px 26px;display:flex;flex-direction:column;gap:14px;background:var(--bg)}
+  .msg-wrap{display:flex;flex-direction:column}
+  .msg-wrap.user{align-items:flex-end}.msg-wrap.ai{align-items:flex-start}
+  .msg-sender{font-size:11px;color:var(--text-tertiary);margin-bottom:4px;padding:0 2px;font-weight:500}
+  .msg-bubble{max-width:75%;padding:12px 16px;border-radius:var(--radius-lg);font-size:13px;line-height:1.65;box-shadow:var(--shadow-sm)}
+  .msg-user-b{background:linear-gradient(135deg,var(--purple-600),var(--purple-700));color:#fff;border-radius:var(--radius-lg) var(--radius-lg) 4px var(--radius-lg)}
+  .msg-ai-b{background:var(--bg-card);border:1px solid var(--border);border-radius:4px var(--radius-lg) var(--radius-lg) var(--radius-lg);color:var(--text-primary)}
+  .quick-btns{display:flex;flex-wrap:wrap;gap:6px;padding:10px 26px;border-top:1px solid var(--border);background:var(--bg-card)}
+  .quick-btn{font-size:11px;padding:6px 12px;border:1px solid var(--border-md);border-radius:20px;cursor:pointer;background:var(--bg-card);color:var(--text-secondary);font-family:inherit;font-weight:500;transition:background .12s,box-shadow .12s;box-shadow:var(--shadow-sm)}
+  .quick-btn:hover{background:var(--purple-50);color:var(--purple-600);border-color:var(--purple-200);box-shadow:var(--shadow-md)}
+  .chat-footer{display:flex;gap:8px;padding:12px 26px 16px;background:var(--bg-card);border-top:1px solid var(--border)}
+  .chat-input-field{flex:1;padding:10px 14px;border:1px solid var(--border-md);border-radius:var(--radius-md);font-size:13px;font-family:inherit;background:var(--bg);color:var(--text-primary);outline:none;transition:border-color .15s,box-shadow .15s;box-shadow:var(--shadow-sm)}
+  .chat-input-field:focus{border-color:var(--purple-600);box-shadow:0 0 0 3px rgba(83,74,183,0.12)}
+  /* SM TABS */
+  .sm-tab{padding:10px 18px;font-size:13px;font-weight:600;border:none;border-bottom:2.5px solid transparent;background:none;cursor:pointer;color:var(--text-secondary);font-family:inherit;display:flex;align-items:center;gap:6px;transition:color .12s}
+  .sm-tab:hover{color:var(--text-primary)}
+  .sm-tab.active{color:var(--purple-600);border-bottom-color:var(--purple-600)}
+  .sm-panel{}
+  /* CONV */
+  .conv-item{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:10px 12px;cursor:pointer;transition:border-color .12s,background .12s,box-shadow .12s;box-shadow:var(--shadow-sm)}
+  .conv-item:hover{border-color:var(--border-md);background:var(--bg-secondary);box-shadow:var(--shadow-md)}
+  .conv-item.active-conv{border-color:var(--purple-600);background:var(--purple-50);box-shadow:0 0 0 2px rgba(83,74,183,0.12)}
+  /* IDEAS */
+  .idea-suggestion{display:flex;align-items:center;gap:10px;padding:10px;border-radius:var(--radius-md);cursor:pointer;transition:background .12s;border-bottom:1px solid var(--border)}
+  .idea-suggestion:last-child{border-bottom:none}
+  .idea-suggestion:hover{background:var(--bg-secondary)}
+  .idea-icon{width:32px;height:32px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;box-shadow:var(--shadow-sm)}
+  .idea-title{font-size:12px;font-weight:600;margin-bottom:2px}.idea-sub{font-size:11px;color:var(--text-tertiary)}
+  /* NETWORK */
+  .network-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)}
+  .network-row:last-child{border-bottom:none}
+  /* CALENDAR */
+  .cal-day{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:8px;min-height:80px}
+  .cal-day.today{border-color:var(--purple-600);background:var(--purple-50);box-shadow:0 0 0 2px rgba(83,74,183,0.12)}
+  .cal-day.today .cal-day-num{color:var(--purple-600)}
+  /* MODAL */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(35,29,120,0.42);backdrop-filter:blur(4px);z-index:100;align-items:center;justify-content:center}
+  .modal-overlay.open{display:flex}
+  .modal{background:var(--bg-card);border-radius:var(--radius-xl);border:1px solid var(--border);width:520px;max-width:90vw;max-height:88vh;overflow-y:auto;padding:26px;box-shadow:var(--shadow-lg)}
+  .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+  .modal-title{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .modal-close{font-size:18px;cursor:pointer;color:var(--text-secondary);background:var(--bg-secondary);border:none;padding:4px 8px;border-radius:var(--radius-sm)}
+  .modal-close:hover{background:var(--bg);color:var(--text-primary)}
+  .modal-field{margin-bottom:15px}
+  .modal-label{font-size:11px;font-weight:700;color:var(--text-secondary);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+  .modal-input{width:100%;padding:9px 12px;border:1px solid var(--border-md);border-radius:var(--radius-md);font-size:13px;font-family:inherit;background:var(--bg);color:var(--text-primary);outline:none;transition:border-color .15s,box-shadow .15s}
+  .modal-input:focus{border-color:var(--purple-600);box-shadow:0 0 0 3px rgba(83,74,183,0.10)}
+  textarea.modal-input{min-height:90px;resize:vertical}
+  .modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+  /* CONCURRENCE */
+  .concur-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;margin-bottom:12px;box-shadow:var(--shadow-sm);transition:box-shadow .2s}
+  .concur-card:hover{box-shadow:var(--shadow-md)}
+  .concur-header{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+  .concur-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;box-shadow:var(--shadow-sm)}
+  /* TECH */
+  .tech-article{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+  .tech-article:last-child{border-bottom:none}
+  .tech-cat-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0;box-shadow:0 0 4px rgba(0,0,0,.18)}
+  .tech-title{font-size:12px;font-weight:600;margin-bottom:2px}.tech-source{font-size:11px;color:var(--text-tertiary)}
+  /* POSTS */
+  .sm-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .post-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;box-shadow:var(--shadow-sm);transition:box-shadow .2s}
+  .post-card:hover{box-shadow:var(--shadow-md)}
+  .post-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+  .platform-icon{font-size:20px}.post-platform{font-size:12px;font-weight:700}
+  .post-time{font-size:11px;color:var(--text-tertiary);margin-left:auto}
+  .post-content{font-size:12px;color:var(--text-secondary);line-height:1.65;margin-bottom:10px}
+  .post-hashtags{font-size:11px;color:var(--purple-600);margin-bottom:10px;font-weight:500}
+  .post-stats{display:flex;gap:12px;font-size:11px;color:var(--text-secondary);padding-top:9px;border-top:1px solid var(--border);font-weight:500}
+  /* FLUX */
+  .flux-step{display:flex;align-items:flex-start;gap:14px;padding:13px 0;border-bottom:1px solid var(--border)}
+  .flux-step:last-child{border-bottom:none}
+  .flux-num{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:2px;box-shadow:var(--shadow-sm)}
+  .flux-body{flex:1}.flux-title{font-size:13px;font-weight:700;margin-bottom:4px}
+  .flux-desc{font-size:12px;color:var(--text-secondary);line-height:1.6}
+  .flux-icon{font-size:20px;flex-shrink:0;margin-top:3px}
+  .flux-arrow{text-align:center;color:var(--purple-200);font-size:16px;padding:2px 0;margin-left:14px}
+  /* SYNC */
+  .sync-agent-row{display:flex;align-items:center;gap:10px;padding:11px 13px;border:1px solid var(--border);border-radius:var(--radius-md);transition:border-color .12s,background .12s,box-shadow .12s;user-select:none;box-shadow:var(--shadow-sm)}
+  .sync-agent-row:hover{border-color:var(--border-md);background:var(--bg-secondary);box-shadow:var(--shadow-md)}
+  .sync-agent-check{width:20px;height:20px;border-radius:5px;border:1.5px solid var(--border-md);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--bg-card);transition:background .12s,border-color .12s,box-shadow .12s}
+  .sync-agent-check.checked{background:linear-gradient(135deg,var(--purple-600),var(--purple-700));border-color:var(--purple-700);box-shadow:0 2px 6px rgba(83,74,183,0.3)}
+  .sync-agent-icon{width:32px;height:32px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;box-shadow:var(--shadow-sm)}
+  @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  /* SCROLLBAR */
+  ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:var(--purple-200);border-radius:3px}
+  /* MISC */
+  .section-gap{margin-bottom:18px}
+  .sync-indicator{font-size:11px;color:var(--text-tertiary);display:flex;align-items:center;gap:5px;font-weight:500}
+</style>
+</head>
+<body>
+
+<!-- MODAL NOUVEAU POST -->
+<div class="modal-overlay" id="modalNewPost">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title"><i class="ti ti-plus"></i> Nouveau post planifié</div><button class="modal-close" onclick="closeModal('modalNewPost')">✕</button></div>
+    <div class="modal-field"><div class="modal-label">Réseau</div><select class="modal-input"><option>LinkedIn</option><option>Instagram</option><option>Facebook</option><option>X (Twitter)</option></select></div>
+    <div class="modal-field"><div class="modal-label">Date et heure de publication</div><input class="modal-input" type="datetime-local" value="2026-06-17T09:00"></div>
+    <div class="modal-field"><div class="modal-label">Texte du post</div><textarea class="modal-input" style="min-height:120px" placeholder="Rédigez votre post ou laissez l'IA le générer..."></textarea></div>
+    <div class="modal-field"><div class="modal-label">Image</div><div style="border:1px dashed var(--border-md);border-radius:var(--radius-md);padding:20px;text-align:center;color:var(--text-tertiary);font-size:12px;cursor:pointer"><i class="ti ti-photo" style="font-size:24px;display:block;margin-bottom:6px"></i>Glisser une image ou <span style="color:var(--purple-600)">parcourir</span><br><span style="font-size:10px">ou <button class="btn btn-sm btn-primary" style="margin-top:8px"><i class="ti ti-sparkles"></i> Générer avec IA</button></span></div></div>
+    <div class="modal-footer"><button class="btn" onclick="closeModal('modalNewPost')">Annuler</button><button class="btn btn-primary" onclick="closeModal('modalNewPost')"><i class="ti ti-calendar"></i> Planifier</button></div>
+  </div>
+</div>
+
+<!-- MODAL GÉNÉRATION IA DEPUIS CALENDRIER -->
+<div class="modal-overlay" id="modalIdeaGen">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title"><i class="ti ti-sparkles"></i> Générer des posts avec l'IA</div><button class="modal-close" onclick="closeModal('modalIdeaGen')">✕</button></div>
+    <div style="background:var(--purple-50);border-radius:var(--radius-md);padding:10px 12px;font-size:12px;margin-bottom:14px;color:var(--purple-600)"><i class="ti ti-info-circle"></i> L'IA va analyser votre actualité (événements détectés, réalisations, AO) et proposer un plan éditorial complet.</div>
+    <div class="modal-field"><div class="modal-label">Période à couvrir</div><select class="modal-input"><option>Cette semaine (7 jours)</option><option>2 prochaines semaines</option><option>Ce mois-ci</option></select></div>
+    <div class="modal-field"><div class="modal-label">Fréquence souhaitée</div><select class="modal-input"><option>3 posts / semaine</option><option>5 posts / semaine</option><option>1 post / jour</option></select></div>
+    <div class="modal-field"><div class="modal-label">Réseaux cibles</div><div style="display:flex;flex-direction:column;gap:6px;font-size:12px"><label style="display:flex;align-items:center;gap:7px;cursor:pointer"><input type="checkbox" checked> LinkedIn</label><label style="display:flex;align-items:center;gap:7px;cursor:pointer"><input type="checkbox" checked> Instagram</label><label style="display:flex;align-items:center;gap:7px;cursor:pointer"><input type="checkbox" checked> Facebook</label><label style="display:flex;align-items:center;gap:7px;cursor:pointer"><input type="checkbox"> X (Twitter)</label></div></div>
+    <div class="modal-footer"><button class="btn" onclick="closeModal('modalIdeaGen')">Annuler</button><button class="btn btn-primary" onclick="generateCalendar()"><i class="ti ti-sparkles"></i> Générer le plan éditorial</button></div>
+  </div>
+</div>
+
+<!-- MODAL NOUVELLE FAQ -->
+<div class="modal-overlay" id="modalNewFaq">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title"><i class="ti ti-plus"></i> Ajouter une FAQ</div><button class="modal-close" onclick="closeModal('modalNewFaq')">✕</button></div>
+    <div class="modal-field"><div class="modal-label">Question</div><input class="modal-input" type="text" placeholder="Ex: Proposez-vous la livraison du mobilier ?"></div>
+    <div class="modal-field"><div class="modal-label">Réponse configurée</div><textarea class="modal-input" style="min-height:100px" placeholder="La réponse exacte que le chatbot devra donner..."></textarea></div>
+    <div class="modal-field"><div class="modal-label">Mots-clés déclencheurs</div><input class="modal-input" type="text" placeholder="livraison, transport, acheminement, envoi..."></div>
+    <div class="modal-footer"><button class="btn" onclick="closeModal('modalNewFaq')">Annuler</button><button class="btn btn-primary" onclick="closeModal('modalNewFaq')"><i class="ti ti-check"></i> Enregistrer</button></div>
+  </div>
+</div>
+
+<!-- MODAL NOUVEL ARTICLE -->
+<div class="modal-overlay" id="modalNewArticle">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title"><i class="ti ti-file-text"></i> Nouvel article de connaissance</div><button class="modal-close" onclick="closeModal('modalNewArticle')">✕</button></div>
+    <div class="modal-field"><div class="modal-label">Titre</div><input class="modal-input" type="text" placeholder="Ex: Guide des délais d'installation par type d'événement"></div>
+    <div class="modal-field"><div class="modal-label">Contenu</div><textarea class="modal-input" style="min-height:140px" placeholder="Ou importez un document PDF / Word ci-dessous..."></textarea></div>
+    <div style="text-align:center;padding:10px;border:1px dashed var(--border-md);border-radius:var(--radius-md);font-size:12px;color:var(--text-tertiary);cursor:pointer;margin-bottom:14px"><i class="ti ti-upload" style="font-size:20px;display:block;margin-bottom:4px"></i>Importer PDF ou Word</div>
+    <div class="modal-footer"><button class="btn" onclick="closeModal('modalNewArticle')">Annuler</button><button class="btn btn-primary" onclick="closeModal('modalNewArticle')"><i class="ti ti-check"></i> Enregistrer</button></div>
+  </div>
+</div>
+
+<!-- MODAL FICHE LEAD -->
+<div class="modal-overlay" id="modalFicheLead">
+  <div class="modal" style="width:680px;max-width:95vw">
+    <div class="modal-header">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:36px;height:36px;background:var(--amber-50);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center"><i class="ti ti-building" style="color:var(--amber-600)"></i></div>
+        <div>
+          <div class="modal-title" style="font-size:14px">Stand OCP Group — Salon Automobile Casablanca</div>
+          <div style="font-size:11px;color:var(--text-secondary)">Lead · Détecté le 10 juin 2026 · Source : Détection événement</div>
+        </div>
+      </div>
+      <button class="modal-close" onclick="closeModal('modalFicheLead')">✕</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">
+      <div style="background:var(--coral-50);border-radius:var(--radius-md);padding:10px;text-align:center"><div style="font-size:10px;color:var(--coral-600);font-weight:600;margin-bottom:3px">SCORE IA</div><div style="font-size:22px;font-weight:600;color:var(--coral-600)">87</div><div style="font-size:10px;color:var(--coral-600)">🔴 HOT</div></div>
+      <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:10px;text-align:center"><div style="font-size:10px;color:var(--text-secondary);font-weight:600;margin-bottom:3px">BUDGET ESTIMÉ</div><div style="font-size:16px;font-weight:600">320 000</div><div style="font-size:10px;color:var(--text-secondary)">MAD</div></div>
+      <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:10px;text-align:center"><div style="font-size:10px;color:var(--text-secondary);font-weight:600;margin-bottom:3px">DEADLINE</div><div style="font-size:16px;font-weight:600;color:var(--coral-400)">22 juin</div><div style="font-size:10px;color:var(--coral-400)">Dans 7 jours</div></div>
+      <div style="background:var(--teal-50);border-radius:var(--radius-md);padding:10px;text-align:center"><div style="font-size:10px;color:var(--teal-600);font-weight:600;margin-bottom:3px">STATUT</div><div style="font-size:13px;font-weight:600;color:var(--teal-600)">Contacté</div><div style="font-size:10px;color:var(--teal-600)">Email envoyé</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+      <div>
+        <div style="font-size:10px;font-weight:600;color:var(--text-tertiary);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">Organisme</div>
+        <div style="display:flex;flex-direction:column;gap:5px;font-size:12px">
+          <div style="display:flex;gap:8px"><span style="color:var(--text-tertiary);min-width:75px">Entreprise</span><strong>OCP Group</strong></div>
+          <div style="display:flex;gap:8px"><span style="color:var(--text-tertiary);min-width:75px">Secteur</span><span>Industrie / Phosphates</span></div>
+          <div style="display:flex;gap:8px"><span style="color:var(--text-tertiary);min-width:75px">Ville</span><span>Casablanca</span></div>
+          <div style="display:flex;gap:8px"><span style="color:var(--text-tertiary);min-width:75px">Événement</span><span>Salon Automobile Maroc 2026</span></div>
+        </div>
+        <div style="font-size:10px;font-weight:600;color:var(--text-tertiary);margin:12px 0 8px;text-transform:uppercase;letter-spacing:.06em">Contact décideur</div>
+        <div style="display:flex;flex-direction:column;gap:5px;font-size:12px">
+          <div style="display:flex;gap:8px"><span style="color:var(--text-tertiary);min-width:75px">Nom</span><strong>Mme Leila Benali</strong></div>
+          <div style="display:flex;gap:8px"><span style="color:var(--text-tertiary);min-width:75px">Fonction</span><span>Directrice Communication</span></div>
+          <div style="display:flex;gap:8px"><span style="color:var(--text-tertiary);min-width:75px">Email</span><span style="color:var(--purple-600)">l.benali@ocpgroup.ma</span></div>
+          <div style="display:flex;gap:8px"><span style="color:var(--text-tertiary);min-width:75px">Tél.</span><span>+212 5XX XXX XXX</span></div>
+          <div style="display:flex;gap:8px"><span style="color:var(--text-tertiary);min-width:75px">LinkedIn</span><span style="color:var(--purple-600)">linkedin.com/in/leila-benali</span></div>
+        </div>
+        <div style="font-size:10px;font-weight:600;color:var(--text-tertiary);margin:12px 0 6px;text-transform:uppercase;letter-spacing:.06em">Concurrents détectés</div>
+        <div style="display:flex;flex-direction:column;gap:4px;font-size:12px">
+          <div style="display:flex;align-items:center;gap:6px"><span class="dot dot-red"></span><strong>EventStand Pro</strong> — présent sur cet AO</div>
+          <div style="display:flex;align-items:center;gap:6px"><span class="dot dot-amber"></span>Deco Events Maroc — possible</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:600;color:var(--text-tertiary);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">Détail du score IA</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>Budget estimé</span><span style="font-weight:600;color:var(--purple-600)">28/30</span></div><div style="background:var(--bg-secondary);border-radius:3px;height:5px"><div style="width:93%;height:5px;border-radius:3px;background:var(--purple-600)"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>Délai disponible</span><span style="font-weight:600;color:var(--purple-600)">18/25</span></div><div style="background:var(--bg-secondary);border-radius:3px;height:5px"><div style="width:72%;height:5px;border-radius:3px;background:var(--purple-600)"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>Notoriété organisme</span><span style="font-weight:600;color:var(--green-teal)">20/20</span></div><div style="background:var(--bg-secondary);border-radius:3px;height:5px"><div style="width:100%;height:5px;border-radius:3px;background:var(--green-teal)"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>Pertinence secteur</span><span style="font-weight:600;color:var(--purple-600)">13/15</span></div><div style="background:var(--bg-secondary);border-radius:3px;height:5px"><div style="width:87%;height:5px;border-radius:3px;background:var(--purple-600)"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>Contact disponible</span><span style="font-weight:600;color:var(--purple-600)">8/10</span></div><div style="background:var(--bg-secondary);border-radius:3px;height:5px"><div style="width:80%;height:5px;border-radius:3px;background:var(--purple-600)"></div></div></div>
+        </div>
+        <div style="font-size:10px;font-weight:600;color:var(--text-tertiary);margin:14px 0 6px;text-transform:uppercase;letter-spacing:.06em">Historique</div>
+        <div style="display:flex;flex-direction:column;gap:0">
+          <div style="display:flex;gap:10px;padding:7px 0;border-bottom:0.5px solid var(--border);font-size:11px"><span style="color:var(--text-tertiary);min-width:80px">15 juin 09h15</span><div><span class="badge b-done" style="font-size:10px;margin-right:5px">Email envoyé</span>Candidature envoyée à l.benali@ocpgroup.ma</div></div>
+          <div style="display:flex;gap:10px;padding:7px 0;border-bottom:0.5px solid var(--border);font-size:11px"><span style="color:var(--text-tertiary);min-width:80px">13 juin</span><div><span class="badge b-new" style="font-size:10px;margin-right:5px">Lead créé</span>Détecté via veille événementielle</div></div>
+          <div style="display:flex;gap:10px;padding:7px 0;font-size:11px"><span style="color:var(--text-tertiary);min-width:80px">10 juin</span><div><span class="badge b-gray" style="font-size:10px;margin-right:5px">Détection</span>Score 87 · Classé HOT auto</div></div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-bottom:12px"><div style="font-size:10px;font-weight:600;color:var(--text-tertiary);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">Notes commerciales</div><textarea class="modal-input" style="min-height:55px">OCP a travaillé avec EventStand Pro l'an dernier. Mettre en avant nos références industrie et notre délai 48h. Relancer le 18 juin si pas de retour.</textarea></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="openModal('modalEmail');closeModal('modalFicheLead')"><i class="ti ti-mail"></i> Email relance IA</button>
+      <button class="btn"><i class="ti ti-phone"></i> Enregistrer appel</button>
+      <button class="btn"><i class="ti ti-file-plus"></i> Joindre un devis</button>
+      <button class="btn"><i class="ti ti-calendar-plus"></i> Planifier relance</button>
+      <button class="btn" style="margin-left:auto;color:var(--green-teal);border-color:var(--green-teal)"><i class="ti ti-trophy"></i> Marquer Gagné</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalNewLead">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title"><i class="ti ti-plus"></i> Nouveau lead manuel</div>
+      <button class="modal-close" onclick="closeModal('modalNewLead')">✕</button>
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">Nom de l'opportunité</div>
+      <input class="modal-input" type="text" placeholder="Ex: Stand GITEX — OCP Group">
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">Organisme / Client</div>
+      <input class="modal-input" type="text" placeholder="Nom de l'entreprise ou organisme">
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">Source de détection</div>
+      <select class="modal-input">
+        <option>Sodipresse</option>
+        <option>Détection événement</option>
+        <option>LinkedIn</option>
+        <option>Google</option>
+        <option>Réseau / Référence</option>
+        <option>Appel entrant</option>
+      </select>
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">Budget estimé (MAD)</div>
+      <input class="modal-input" type="text" placeholder="Ex: 150 000">
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">Deadline</div>
+      <input class="modal-input" type="date">
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">Notes</div>
+      <textarea class="modal-input" placeholder="Informations complémentaires, contacts, contexte..."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modalNewLead')">Annuler</button>
+      <button class="btn btn-primary" onclick="closeModal('modalNewLead')"><i class="ti ti-check"></i> Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EMAIL IA -->
+<div class="modal-overlay" id="modalEmail">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title"><i class="ti ti-mail"></i> Email généré par IA</div>
+      <button class="modal-close" onclick="closeModal('modalEmail')">✕</button>
+    </div>
+    <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:12px;margin-bottom:14px;font-size:12px;color:var(--text-secondary)">
+      <i class="ti ti-sparkles" style="color:var(--purple-600)"></i> Généré automatiquement à partir du cahier des charges et de vos références clients
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">Objet</div>
+      <input class="modal-input" type="text" value="Candidature — Organisation Cérémonie de Remise de Prix · Ministère de l'Industrie">
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">Corps du message</div>
+      <textarea class="modal-input" style="min-height:200px">Monsieur, Madame,
+
+Nous avons eu l'honneur de prendre connaissance de votre appel d'offres relatif à l'organisation de votre cérémonie de remise de prix.
+
+Fort de notre expertise dans la conception et la réalisation d'événements institutionnels au Maroc, nous sommes en mesure de vous proposer une prestation complète incluant :
+
+• Conception et installation de l'espace de cérémonie
+• Décoration et habillage scénographique
+• Location et mise en place du mobilier événementiel
+• Gestion logistique le jour J
+
+Parmi nos références récentes : [Référence 1], [Référence 2].
+
+Nous restons à votre disposition pour tout complément d'information.
+
+Cordialement,</textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modalEmail')">Modifier</button>
+      <button class="btn btn-primary" onclick="closeModal('modalEmail')"><i class="ti ti-send"></i> Envoyer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SYNCHRONISATION -->
+<div class="modal-overlay" id="modalSync">
+  <div class="modal" style="width:520px">
+    <div class="modal-header">
+      <div class="modal-title"><i class="ti ti-refresh"></i> Synchronisation manuelle</div>
+      <button class="modal-close" onclick="closeModal('modalSync')">✕</button>
+    </div>
+
+    <!-- Sélection agents -->
+    <div id="syncSelectView">
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:14px">Choisissez les agents à relancer maintenant. La synchronisation automatique est programmée chaque nuit entre 02h00 et 04h00.</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px">
+        <label class="sync-agent-row" style="cursor:pointer" onclick="toggleSyncAgent(this)">
+          <div class="sync-agent-check checked"><i class="ti ti-check" style="font-size:10px;color:#fff"></i></div>
+          <div class="sync-agent-icon" style="background:var(--purple-50)"><i class="ti ti-file-search" style="color:var(--purple-600)"></i></div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:500">Agent Sodipresse</div><div style="font-size:11px;color:var(--text-secondary)">Scrape les alertes email · Dernière sync : il y a 14 min</div></div>
+          <span class="status-pill" style="font-size:10px"><div class="pulse-dot"></div> Actif</span>
+        </label>
+        <label class="sync-agent-row" style="cursor:pointer" onclick="toggleSyncAgent(this)">
+          <div class="sync-agent-check checked"><i class="ti ti-check" style="font-size:10px;color:#fff"></i></div>
+          <div class="sync-agent-icon" style="background:var(--teal-50)"><i class="ti ti-calendar-search" style="color:var(--teal-600)"></i></div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:500">Agent Veille événementielle</div><div style="font-size:11px;color:var(--text-secondary)">Détecte les événements Maroc · Dernière sync : il y a 14 min</div></div>
+          <span class="status-pill" style="font-size:10px"><div class="pulse-dot"></div> Actif</span>
+        </label>
+        <label class="sync-agent-row" style="cursor:pointer" onclick="toggleSyncAgent(this)">
+          <div class="sync-agent-check"><i class="ti ti-check" style="font-size:10px;color:#fff"></i></div>
+          <div class="sync-agent-icon" style="background:var(--amber-50)"><i class="ti ti-eye" style="color:var(--amber-600)"></i></div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:500">Agent Veille concurrentielle</div><div style="font-size:11px;color:var(--text-secondary)">Surveille les concurrents · Dernière sync : cette nuit à 04h05</div></div>
+          <span class="status-pill" style="font-size:10px"><div class="pulse-dot"></div> Actif</span>
+        </label>
+        <label class="sync-agent-row" style="cursor:pointer" onclick="toggleSyncAgent(this)">
+          <div class="sync-agent-check"><i class="ti ti-check" style="font-size:10px;color:#fff"></i></div>
+          <div class="sync-agent-icon" style="background:var(--blue-50)"><i class="ti ti-bulb" style="color:var(--blue-600)"></i></div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:500">Agent Veille technologique</div><div style="font-size:11px;color:var(--text-secondary)">Agrège articles innovations · Dernière sync : lundi passé</div></div>
+          <span class="status-pill" style="font-size:10px"><div class="pulse-dot"></div> Actif</span>
+        </label>
+      </div>
+      <div class="modal-footer" style="padding-top:0">
+        <button class="btn" onclick="closeModal('modalSync')">Annuler</button>
+        <button class="btn btn-primary" onclick="startSync()"><i class="ti ti-player-play"></i> Lancer la synchronisation</button>
+      </div>
+    </div>
+
+    <!-- Vue progression -->
+    <div id="syncProgressView" style="display:none">
+      <div style="display:flex;flex-direction:column;gap:12px" id="syncAgentsList"></div>
+      <div id="syncSummary" style="display:none;margin-top:16px;background:var(--teal-50);border:0.5px solid #7DCFB3;border-radius:var(--radius-md);padding:12px 14px">
+        <div style="font-size:13px;font-weight:600;color:var(--teal-600);margin-bottom:8px"><i class="ti ti-check"></i> Synchronisation terminée</div>
+        <div id="syncSummaryContent" style="font-size:12px;color:var(--teal-600);line-height:1.8"></div>
+      </div>
+      <div class="modal-footer" style="padding-top:14px">
+        <button class="btn btn-primary" id="syncCloseBtn" style="display:none" onclick="finishSync()"><i class="ti ti-check"></i> Fermer et actualiser</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- APP SHELL -->
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="logo">
+      <div class="logo-mark">
+        <div class="logo-icon"><i class="ti ti-bolt"></i></div>
+        <span class="logo-title">EventPro AI</span>
+      </div>
+      <div class="logo-sub">Plateforme multi-agents · Maroc</div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Tableau de bord</div>
+      <div class="nav-item active" onclick="showPage('dashboard',this)">
+        <i class="ti ti-layout-dashboard"></i> Vue générale
+        <span class="nav-badge nb-red">3</span>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Prospection</div>
+      <div class="nav-item" onclick="showPage('leads',this)">
+        <i class="ti ti-target"></i> Leads & AO
+        <span class="nav-badge nb-red">8</span>
+      </div>
+      <div class="nav-item" onclick="showPage('sodipresse',this)">
+        <i class="ti ti-file-search"></i> Sodipresse
+        <span class="nav-badge nb-purple">14</span>
+      </div>
+      <div class="nav-item" onclick="showPage('evenements',this)">
+        <i class="ti ti-calendar-event"></i> Événements
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Veille</div>
+      <div class="nav-item" onclick="showPage('concurrence',this)">
+        <i class="ti ti-eye"></i> Concurrents
+        <span class="nav-badge nb-red">1</span>
+      </div>
+      <div class="nav-item" onclick="showPage('technologie',this)">
+        <i class="ti ti-bulb"></i> Technologie
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Outils</div>
+      <div class="nav-item" onclick="showPage('assistant',this)">
+        <i class="ti ti-message-circle"></i> Assistant IA
+      </div>
+      <div class="nav-item" onclick="showPage('social',this)">
+        <i class="ti ti-brand-instagram"></i> Social Media
+      </div>
+      <div class="nav-item" onclick="showPage('support',this)">
+        <i class="ti ti-headset"></i> Support client
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="avatar">AB</div>
+      <div>
+        <div class="sidebar-user-name">Aziz Bouslamati</div>
+        <div class="sidebar-user-role">Responsable commercial</div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="page-title" id="pageTitle">Vue générale</div>
+        <div class="page-sub" id="pageSub">Lundi 15 juin 2026 · <span id="syncLabel">Dernière sync : il y a 14 min</span></div>
+      </div>
+      <div class="topbar-right">
+        <div class="sync-indicator" id="syncIndicator">
+          <div class="pulse-dot"></div> Agents actifs
+        </div>
+        <button class="btn" id="syncBtn" onclick="openModal('modalSync')"><i class="ti ti-refresh"></i> Synchroniser</button>
+        <button class="btn btn-primary" onclick="openModal('modalNewLead')"><i class="ti ti-plus"></i> Nouveau lead</button>
+      </div>
+    </header>
+
+    <!-- ─── DASHBOARD ─── -->
+    <div class="content" id="contentArea">
+
+      <div id="page-dashboard" class="page-content active">
+        <div class="metrics">
+          <div class="metric-card">
+            <div class="metric-label"><i class="ti ti-file-search"></i> AO détectés (30j)</div>
+            <div class="metric-value">47</div>
+            <div class="metric-delta delta-up"><i class="ti ti-arrow-up-right"></i> +12 cette semaine</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label"><i class="ti ti-flame"></i> Leads HOT</div>
+            <div class="metric-value" style="color:var(--coral-400)">8</div>
+            <div class="metric-delta delta-warn"><i class="ti ti-clock"></i> 3 deadlines < 5 jours</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label"><i class="ti ti-calendar"></i> Événements détectés</div>
+            <div class="metric-value">23</div>
+            <div class="metric-delta delta-up"><i class="ti ti-arrow-up-right"></i> 6 nouveaux cette semaine</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label"><i class="ti ti-chart-line"></i> Taux de conversion</div>
+            <div class="metric-value">31%</div>
+            <div class="metric-delta delta-up"><i class="ti ti-arrow-up-right"></i> +4 pts vs mois dernier</div>
+          </div>
+        </div>
+
+        <div class="grid-2 section-gap">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><span class="dot dot-red"></span> Leads HOT — Action requise</div>
+              <span class="card-action" onclick="showPage('leads',document.querySelector('[onclick*=leads]'))">Voir tout →</span>
+            </div>
+            <div class="lead-item">
+              <div class="score-ring score-hot">92</div>
+              <div style="flex:1">
+                <div class="lead-name">Cérémonie remise de prix — Ministère Industrie</div>
+                <div class="lead-meta">Budget estimé : 180 000 MAD · Deadline : <strong style="color:var(--coral-400)">18 juin</strong></div>
+                <div class="lead-tags"><span class="tag">Sodipresse</span><span class="tag">Public</span><span class="tag">Urgent</span></div>
+              </div>
+              <button class="btn btn-sm" onclick="openModal('modalEmail')">Email IA</button>
+            </div>
+            <div class="lead-item">
+              <div class="score-ring score-hot">87</div>
+              <div style="flex:1">
+                <div class="lead-name">Stand OCP — Salon Automobile Casablanca</div>
+                <div class="lead-meta">Budget estimé : 320 000 MAD · Deadline : <strong style="color:var(--coral-400)">22 juin</strong></div>
+                <div class="lead-tags"><span class="tag">Détection</span><span class="tag">Privé</span><span class="tag">Stand</span></div>
+              </div>
+              <button class="btn btn-sm">Relance</button>
+            </div>
+            <div class="lead-item">
+              <div class="score-ring score-warm">74</div>
+              <div style="flex:1">
+                <div class="lead-name">Forum Emploi Rabat — Animation & Décoration</div>
+                <div class="lead-meta">Budget estimé : 90 000 MAD · Deadline : 2 juillet</div>
+                <div class="lead-tags"><span class="tag">LinkedIn</span><span class="tag">Association</span></div>
+              </div>
+              <button class="btn btn-sm" onclick="openModal('modalEmail')">Email IA</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="ti ti-calendar-event"></i> Événements détectés aujourd'hui</div>
+              <span class="card-action" onclick="showPage('evenements',document.querySelector('[onclick*=evenements]'))">Calendrier →</span>
+            </div>
+            <div class="event-item">
+              <div class="event-date-box"><div class="event-day">28</div><div class="event-month">Jun</div></div>
+              <div style="flex:1">
+                <div class="event-name">GITEX Africa 2026 — Marrakech</div>
+                <div class="event-loc"><i class="ti ti-map-pin" style="font-size:11px"></i> Palais des Congrès · 3 jours · ~200 exposants</div>
+              </div>
+              <span class="badge b-tech">Tech</span>
+            </div>
+            <div class="event-item">
+              <div class="event-date-box"><div class="event-day">05</div><div class="event-month">Jul</div></div>
+              <div style="flex:1">
+                <div class="event-name">SIAM — Salon de l'Agriculture Meknès</div>
+                <div class="event-loc"><i class="ti ti-map-pin" style="font-size:11px"></i> OFEC · 5 jours · ~500 exposants</div>
+              </div>
+              <span class="badge b-pro">Pro</span>
+            </div>
+            <div class="event-item">
+              <div class="event-date-box"><div class="event-day">12</div><div class="event-month">Jul</div></div>
+              <div style="flex:1">
+                <div class="event-name">Festival des Arts de la Rue — Casablanca</div>
+                <div class="event-loc"><i class="ti ti-map-pin" style="font-size:11px"></i> Anfa · 2 jours</div>
+              </div>
+              <span class="badge b-culture">Culture</span>
+            </div>
+            <div class="event-item">
+              <div class="event-date-box"><div class="event-day">20</div><div class="event-month">Jul</div></div>
+              <div style="flex:1">
+                <div class="event-name">Gala Championnat National Football</div>
+                <div class="event-loc"><i class="ti ti-map-pin" style="font-size:11px"></i> Complexe Mohammed V · Rabat</div>
+              </div>
+              <span class="badge b-sport">Sport</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="ti ti-activity"></i> Activité des agents — Nuit du 14–15 juin</div>
+            </div>
+            <div class="timeline-item">
+              <div class="tl-dot" style="background:var(--green-teal)"></div>
+              <div><div class="tl-title">Agent Prospection — 14 AO analysés, 3 qualifiés HOT</div><div class="tl-time">02:14 · Sodipresse + marchespublics.gov.ma</div></div>
+            </div>
+            <div class="timeline-item">
+              <div class="tl-dot" style="background:var(--purple-600)"></div>
+              <div><div class="tl-title">Agent Veille — 6 nouveaux événements détectés</div><div class="tl-time">02:31 · Google + LinkedIn Events</div></div>
+            </div>
+            <div class="timeline-item">
+              <div class="tl-dot" style="background:var(--amber-400)"></div>
+              <div><div class="tl-title">Agent Concurrence — EventStand Pro détecté au Salon Auto</div><div class="tl-time">03:05 · Alerte générée → voir veille concurrentielle</div></div>
+            </div>
+            <div class="timeline-item">
+              <div class="tl-dot" style="background:var(--blue-400)"></div>
+              <div><div class="tl-title">Agent Social Media — 2 posts publiés (LinkedIn + Instagram)</div><div class="tl-time">09:00 · Planification automatique exécutée</div></div>
+            </div>
+            <div class="timeline-item">
+              <div class="tl-dot" style="background:var(--green-teal)"></div>
+              <div><div class="tl-title">Agent Support — 3 conversations clients traitées</div><div class="tl-time">08:15 – 11:40 · Site web</div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="ti ti-chart-bar"></i> Pipeline commercial</div>
+            </div>
+            <div class="pipeline-row">
+              <div class="pipeline-label"><span>Détectés</span><span style="color:var(--text-secondary)">47</span></div>
+              <div class="pipeline-bar-bg"><div class="pipeline-bar-fill" style="width:100%;background:var(--purple-600)"></div></div>
+            </div>
+            <div class="pipeline-row">
+              <div class="pipeline-label"><span>Qualifiés</span><span style="color:var(--text-secondary)">23</span></div>
+              <div class="pipeline-bar-bg"><div class="pipeline-bar-fill" style="width:49%;background:#7F77DD"></div></div>
+            </div>
+            <div class="pipeline-row">
+              <div class="pipeline-label"><span>Contactés</span><span style="color:var(--text-secondary)">15</span></div>
+              <div class="pipeline-bar-bg"><div class="pipeline-bar-fill" style="width:32%;background:var(--purple-200)"></div></div>
+            </div>
+            <div class="pipeline-row">
+              <div class="pipeline-label"><span>En négociation</span><span style="color:var(--text-secondary)">7</span></div>
+              <div class="pipeline-bar-bg"><div class="pipeline-bar-fill" style="width:15%;background:var(--green-teal)"></div></div>
+            </div>
+            <div class="pipeline-row">
+              <div class="pipeline-label"><span>Gagnés</span><span style="color:var(--text-secondary)">5</span></div>
+              <div class="pipeline-bar-bg"><div class="pipeline-bar-fill" style="width:11%;background:#085041"></div></div>
+            </div>
+            <div style="margin-top:12px;padding-top:10px;border-top:0.5px solid var(--border);font-size:11px;color:var(--text-secondary)">
+              Valeur pipeline estimé : <strong style="color:var(--text-primary)">1 240 000 MAD</strong>
+            </div>
+          </div>
+        </div>
+      </div><!-- /dashboard -->
+
+      <!-- ─── LEADS & AO ─── -->
+      <div id="page-leads" class="page-content">
+        <div class="info-banner">
+          <i class="ti ti-mail-opened"></i>
+          <div style="flex:1"><strong>Sodipresse — alerte email reçue à 02h14</strong> · 5 nouveaux AO analysés · 2 qualifiés HOT (Ministère Industrie + RAM)</div>
+          <button class="btn btn-primary btn-sm" onclick="showPage('sodipresse',document.querySelector('[onclick*=sodipresse]'))">Voir les AO →</button>
+        </div>
+
+        <div class="filter-bar">
+          <button class="filter-btn active" onclick="filterLeads('all',this)">Tous (23)</button>
+          <button class="filter-btn" onclick="filterLeads('hot',this)"><span class="dot dot-red"></span> HOT (8)</button>
+          <button class="filter-btn" onclick="filterLeads('warm',this)"><span class="dot dot-amber"></span> WARM (11)</button>
+          <button class="filter-btn" onclick="filterLeads('cold',this)"><span class="dot dot-blue"></span> COLD (4)</button>
+          <button class="filter-btn" onclick="filterLeads('ao',this)"><i class="ti ti-file-search"></i> Sodipresse</button>
+          <button class="filter-btn" onclick="filterLeads('detect',this)"><i class="ti ti-radar"></i> Détection event</button>
+          <button class="filter-btn" onclick="filterLeads('all',this)"><i class="ti ti-brand-linkedin"></i> LinkedIn</button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:70px">Score</th>
+                <th>Opportunité</th>
+                <th>Source</th>
+                <th>Budget estimé</th>
+                <th>Deadline</th>
+                <th>Statut</th>
+                <th style="width:110px">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="badge b-hot">92 🔴</span></td>
+                <td><div class="td-name">Cérémonie remise de prix</div><div class="td-sub">Ministère de l'Industrie — Rabat</div></td>
+                <td><span class="tag">Sodipresse</span></td>
+                <td>180 000 MAD</td>
+                <td><strong style="color:var(--coral-400)">18 juin</strong></td>
+                <td><span class="badge b-new">Nouveau</span></td>
+                <td><button class="btn btn-sm" onclick="openModal('modalEmail')">Email IA</button></td>
+              </tr>
+              <tr>
+                <td><span class="badge b-hot">87 🔴</span></td>
+                <td><div class="td-name">Stand OCP — Salon Automobile</div><div class="td-sub">OCP Group — Casablanca</div></td>
+                <td><span class="tag">Détection</span></td>
+                <td>320 000 MAD</td>
+                <td><strong style="color:var(--coral-400)">22 juin</strong></td>
+                <td><span class="badge b-done">Contacté</span></td>
+                <td><button class="btn btn-sm" onclick="openModal('modalFicheLead')">Voir fiche</button></td>
+              </tr>
+              <tr>
+                <td><span class="badge b-hot">81 🔴</span></td>
+                <td><div class="td-name">Conférence annuelle — décoration + mobilier</div><div class="td-sub">Royal Air Maroc — Casablanca</div></td>
+                <td><span class="tag">Sodipresse</span></td>
+                <td>340 000 MAD</td>
+                <td><strong style="color:var(--coral-400)">30 juin</strong></td>
+                <td><span class="badge b-new">Nouveau</span></td>
+                <td><button class="btn btn-sm" onclick="openModal('modalEmail')">Email IA</button></td>
+              </tr>
+              <tr>
+                <td><span class="badge b-warm">74 🟡</span></td>
+                <td><div class="td-name">Forum Emploi — Animation & Décoration</div><div class="td-sub">ANAPEC — Rabat</div></td>
+                <td><span class="tag">LinkedIn</span></td>
+                <td>90 000 MAD</td>
+                <td>2 juillet</td>
+                <td><span class="badge b-new">Nouveau</span></td>
+                <td><button class="btn btn-sm" onclick="openModal('modalEmail')">Email IA</button></td>
+              </tr>
+              <tr>
+                <td><span class="badge b-warm">68 🟡</span></td>
+                <td><div class="td-name">Inauguration nouveau siège social</div><div class="td-sub">Banque Attijari — Casablanca</div></td>
+                <td><span class="tag">Sodipresse</span></td>
+                <td>220 000 MAD</td>
+                <td>10 juillet</td>
+                <td><span class="badge b-done">Contacté</span></td>
+                <td><button class="btn btn-sm" onclick="openModal('modalFicheLead')">Voir fiche</button></td>
+              </tr>
+              <tr>
+                <td><span class="badge b-warm">61 🟡</span></td>
+                <td><div class="td-name">Location mobilier — événement corporate</div><div class="td-sub">OCP Group — Meknès</div></td>
+                <td><span class="tag">Sodipresse</span></td>
+                <td>85 000 MAD</td>
+                <td>25 juin</td>
+                <td><span class="badge b-done">En négociation</span></td>
+                <td><button class="btn btn-sm" onclick="openModal('modalFicheLead')">Voir fiche</button></td>
+              </tr>
+              <tr>
+                <td><span class="badge" style="background:var(--blue-50);color:var(--blue-600)">55 🔵</span></td>
+                <td><div class="td-name">GITEX Africa — Stand exposant tech</div><div class="td-sub">Entreprise à identifier — Marrakech</div></td>
+                <td><span class="tag">Google</span></td>
+                <td>150 000 MAD</td>
+                <td>28 juin</td>
+                <td><span class="badge b-gray">À enrichir</span></td>
+                <td><button class="btn btn-sm">Enrichir IA</button></td>
+              </tr>
+              <tr>
+                <td><span class="badge" style="background:var(--blue-50);color:var(--blue-600)">48 🔵</span></td>
+                <td><div class="td-name">Festival musique — scène et sonorisation</div><div class="td-sub">Association El Hoceima Sounds</div></td>
+                <td><span class="tag">Facebook</span></td>
+                <td>60 000 MAD</td>
+                <td>15 août</td>
+                <td><span class="badge b-gray">Cold</span></td>
+                <td><button class="btn btn-sm" onclick="openModal('modalFicheLead')">Voir fiche</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div><!-- /leads -->
+
+
+      <!-- ─── SODIPRESSE ─── -->
+      <div id="page-sodipresse" class="page-content">
+
+        <!-- Onglets Sodipresse -->
+        <div style="display:flex;gap:0;margin-bottom:20px;border-bottom:0.5px solid var(--border)">
+          <button class="sm-tab active" onclick="showTab('sodi','ao',this)"><i class="ti ti-file-search"></i> Appels d'offres reçus</button>
+          <button class="sm-tab" onclick="showTab('sodi','config',this)"><i class="ti ti-settings"></i> Paramétrage agent</button>
+          <button class="sm-tab" onclick="showTab('sodi','flux',this)"><i class="ti ti-git-branch"></i> Flux de traitement</button>
+        </div>
+
+        <!-- ONGLET AO -->
+        <div id="sodi-ao">
+          <div class="info-banner">
+            <i class="ti ti-mail-opened"></i>
+            <div style="flex:1">
+              Connexion via <strong>alertes email IMAP</strong> — Boîte dédiée synchronisée · Mots-clés actifs :
+              <em>événement, stand, décoration, mobilier, logistique, animation, inauguration, salon, scène, cérémonie</em>
+            </div>
+            <span class="status-pill"><div class="pulse-dot"></div> Actif</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">
+            <div class="metric-card"><div class="metric-label">AO reçus (30j)</div><div class="metric-value">47</div></div>
+            <div class="metric-card"><div class="metric-label">Filtrés événementiel</div><div class="metric-value">14</div></div>
+            <div class="metric-card"><div class="metric-label">HOT cette semaine</div><div class="metric-value" style="color:var(--coral-400)">3</div></div>
+            <div class="metric-card"><div class="metric-label">Budget cumulé détecté</div><div class="metric-value" style="font-size:18px">875K MAD</div></div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Réception</th><th>Titre de l'AO</th><th>Organisme</th><th>Type</th><th>Budget estimé</th><th>Deadline</th><th>Score IA</th><th>Action</th></tr>
+              </thead>
+              <tbody>
+                <tr><td style="color:var(--text-secondary);white-space:nowrap">15 juin · 02h14</td><td><div class="td-name">Organisation cérémonie de remise de prix</div></td><td>Ministère de l'Industrie</td><td><span class="badge b-gray">Public</span></td><td>180 000 MAD</td><td><strong style="color:var(--coral-400)">18 juin</strong></td><td><span class="badge b-hot">92</span></td><td><button class="btn btn-sm" onclick="openModal('modalEmail')">Email IA</button></td></tr>
+                <tr><td style="color:var(--text-secondary);white-space:nowrap">15 juin · 02h14</td><td><div class="td-name">Conférence annuelle — décoration & mobilier</div></td><td>Royal Air Maroc</td><td><span class="badge b-gray">Privé</span></td><td>340 000 MAD</td><td><strong style="color:var(--coral-400)">30 juin</strong></td><td><span class="badge b-hot">81</span></td><td><button class="btn btn-sm" onclick="openModal('modalEmail')">Email IA</button></td></tr>
+                <tr><td style="color:var(--text-secondary);white-space:nowrap">14 juin · 02h09</td><td><div class="td-name">Inauguration siège social — habillage & décoration</div></td><td>Banque Attijari</td><td><span class="badge b-gray">Privé</span></td><td>220 000 MAD</td><td>10 juillet</td><td><span class="badge b-warm">68</span></td><td><button class="btn btn-sm" onclick="openModal('modalFicheLead')">Voir fiche</button></td></tr>
+                <tr><td style="color:var(--text-secondary);white-space:nowrap">14 juin · 02h09</td><td><div class="td-name">Location mobilier événementiel — séminaire</div></td><td>OCP Group</td><td><span class="badge b-gray">Privé</span></td><td>85 000 MAD</td><td>25 juin</td><td><span class="badge b-warm">61</span></td><td><button class="btn btn-sm" onclick="openModal('modalFicheLead')">Voir fiche</button></td></tr>
+                <tr><td style="color:var(--text-secondary);white-space:nowrap">13 juin · 02h17</td><td><div class="td-name">Aménagement espace exposition permanente</div></td><td>Région Casablanca-Settat</td><td><span class="badge b-gray">Public</span></td><td>120 000 MAD</td><td>5 juillet</td><td><span class="badge b-warm">57</span></td><td><button class="btn btn-sm" onclick="openModal('modalFicheLead')">Voir fiche</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ONGLET CONFIG SODIPRESSE -->
+        <div id="sodi-config" style="display:none">
+          <div class="info-banner" style="background:var(--teal-50);border-color:#7DCFB3">
+            <i class="ti ti-info-circle" style="color:var(--teal-600)"></i>
+            <div style="flex:1;color:var(--teal-600)">Ce formulaire configure l'agent de scraping Sodipresse. Les modifications prennent effet dès la prochaine synchronisation nocturne.</div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <!-- Connexion IMAP -->
+            <div class="card">
+              <div class="card-header"><div class="card-title"><i class="ti ti-mail"></i> Connexion email IMAP</div><span class="status-pill" style="font-size:10px"><div class="pulse-dot"></div> Connecté</span></div>
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div><div class="modal-label" style="margin-bottom:5px">Adresse email dédiée</div><input class="modal-input" type="email" value="alertes-sodipresse@eventpro.ma"></div>
+                <div><div class="modal-label" style="margin-bottom:5px">Serveur IMAP</div><input class="modal-input" type="text" value="imap.gmail.com" placeholder="imap.gmail.com ou imap.domain.com"></div>
+                <div style="display:grid;grid-template-columns:3fr 1fr;gap:8px">
+                  <div><div class="modal-label" style="margin-bottom:5px">Mot de passe application</div><input class="modal-input" type="password" value="••••••••••••••••"></div>
+                  <div><div class="modal-label" style="margin-bottom:5px">Port</div><input class="modal-input" type="text" value="993"></div>
+                </div>
+                <div><div class="modal-label" style="margin-bottom:5px">Dossier à surveiller</div><input class="modal-input" type="text" value="INBOX/Sodipresse"></div>
+                <button class="btn btn-sm" style="width:100%"><i class="ti ti-plug"></i> Tester la connexion</button>
+              </div>
+            </div>
+
+            <!-- Mots-clés -->
+            <div class="card">
+              <div class="card-header"><div class="card-title"><i class="ti ti-tags"></i> Filtres de mots-clés</div></div>
+              <div style="display:flex;flex-direction:column;gap:12px">
+                <div>
+                  <div class="modal-label" style="margin-bottom:5px">✅ Mots-clés déclencheurs <span style="font-weight:400;color:var(--text-tertiary)">(l'AO sera retenu si l'un de ces mots apparaît)</span></div>
+                  <textarea class="modal-input" style="min-height:80px">stand, décoration, mobilier, scène, animation, inauguration, cérémonie, salon, logistique événementielle, habillage, scénographie, podium, éclairage événement, location matériel, organisation événement</textarea>
+                </div>
+                <div>
+                  <div class="modal-label" style="margin-bottom:5px">❌ Mots-clés d'exclusion <span style="font-weight:400;color:var(--text-tertiary)">(l'AO sera ignoré si l'un de ces mots apparaît)</span></div>
+                  <textarea class="modal-input" style="min-height:60px">travaux publics, génie civil, informatique, fournitures bureau, nettoyage, gardiennage, transport marchandises</textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Scoring & seuils -->
+            <div class="card">
+              <div class="card-header"><div class="card-title"><i class="ti ti-adjustments"></i> Scoring & seuils d'alerte</div></div>
+              <div style="display:flex;flex-direction:column;gap:12px">
+                <div>
+                  <div class="modal-label" style="margin-bottom:5px">Score minimum pour afficher l'AO</div>
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <input type="range" min="0" max="100" value="40" style="flex:1;accent-color:var(--purple-600)" oninput="document.getElementById('scoreMin').textContent=this.value">
+                    <span id="scoreMin" style="font-size:13px;font-weight:600;color:var(--purple-600);min-width:28px">40</span>
+                  </div>
+                </div>
+                <div>
+                  <div class="modal-label" style="margin-bottom:5px">Score HOT (alerte immédiate)</div>
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <input type="range" min="0" max="100" value="80" style="flex:1;accent-color:var(--coral-400)" oninput="document.getElementById('scoreHot').textContent=this.value">
+                    <span id="scoreHot" style="font-size:13px;font-weight:600;color:var(--coral-400);min-width:28px">80</span>
+                  </div>
+                </div>
+                <div>
+                  <div class="modal-label" style="margin-bottom:5px">Budget minimum à retenir (MAD)</div>
+                  <input class="modal-input" type="number" value="50000" placeholder="50 000">
+                </div>
+                <div>
+                  <div class="modal-label" style="margin-bottom:5px">Alerte HOT envoyée vers</div>
+                  <input class="modal-input" type="email" value="karim.alaoui@eventpro.ma" placeholder="email@domaine.ma">
+                </div>
+              </div>
+            </div>
+
+            <!-- Planification & options -->
+            <div class="card">
+              <div class="card-header"><div class="card-title"><i class="ti ti-clock"></i> Planification & options</div></div>
+              <div style="display:flex;flex-direction:column;gap:12px">
+                <div>
+                  <div class="modal-label" style="margin-bottom:5px">Heure de synchronisation</div>
+                  <input class="modal-input" type="time" value="02:00">
+                </div>
+                <div>
+                  <div class="modal-label" style="margin-bottom:5px">Jours actifs</div>
+                  <div style="display:flex;gap:6px;flex-wrap:wrap;font-size:12px">
+                    <label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" checked> Lun</label>
+                    <label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" checked> Mar</label>
+                    <label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" checked> Mer</label>
+                    <label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" checked> Jeu</label>
+                    <label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" checked> Ven</label>
+                    <label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox"> Sam</label>
+                    <label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox"> Dim</label>
+                  </div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:7px;font-size:12px">
+                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" checked> Créer automatiquement un lead HOT dans le CRM</label>
+                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" checked> Télécharger le cahier des charges si lien disponible</label>
+                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" checked> Enrichir le contact (scraping site organisme)</label>
+                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox"> Relancer l'agent à 08h00 en complément</label>
+                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" checked> Ignorer les AO déjà vus (déduplication)</label>
+                </div>
+                <button class="btn btn-primary" style="width:100%;margin-top:4px"><i class="ti ti-check"></i> Enregistrer la configuration</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ONGLET FLUX -->
+        <div id="sodi-flux" style="display:none">
+          <div class="card">
+            <div class="card-header"><div class="card-title"><i class="ti ti-git-branch"></i> Flux de traitement — Agent Sodipresse</div></div>
+            <div style="display:flex;flex-direction:column;gap:0">
+
+              <div class="flux-step">
+                <div class="flux-num" style="background:var(--purple-50);color:var(--purple-600)">1</div>
+                <div class="flux-body">
+                  <div class="flux-title">Déclenchement (02h00 chaque nuit)</div>
+                  <div class="flux-desc">L'agent se connecte à la boîte email dédiée via protocole IMAP sécurisé et récupère tous les emails non lus reçus depuis la dernière synchronisation.</div>
+                </div>
+                <div class="flux-icon"><i class="ti ti-clock" style="color:var(--purple-600)"></i></div>
+              </div>
+
+              <div class="flux-arrow">↓</div>
+
+              <div class="flux-step">
+                <div class="flux-num" style="background:var(--blue-50);color:var(--blue-600)">2</div>
+                <div class="flux-body">
+                  <div class="flux-title">Parsing du contenu email</div>
+                  <div class="flux-desc">Le contenu HTML de chaque email Sodipresse est analysé pour en extraire : titre de l'AO, organisme commanditaire, date de publication, deadline de dépôt, budget estimé, lien vers l'annonce complète.</div>
+                </div>
+                <div class="flux-icon"><i class="ti ti-code" style="color:var(--blue-600)"></i></div>
+              </div>
+
+              <div class="flux-arrow">↓</div>
+
+              <div class="flux-step">
+                <div class="flux-num" style="background:var(--amber-50);color:var(--amber-600)">3</div>
+                <div class="flux-body">
+                  <div class="flux-title">Filtre événementiel par mots-clés</div>
+                  <div class="flux-desc">L'IA vérifie si le titre et la description contiennent au moins un mot-clé déclencheur configuré (stand, décoration, mobilier…) et aucun mot-clé d'exclusion. Les AO non pertinents sont archivés sans être affichés.</div>
+                  <div style="display:flex;gap:8px;margin-top:8px">
+                    <span style="font-size:11px;padding:2px 8px;background:#E1F5EE;color:#0F6E56;border-radius:10px">✅ Pertinent → continue</span>
+                    <span style="font-size:11px;padding:2px 8px;background:var(--gray-50);color:var(--gray-600);border-radius:10px">❌ Non pertinent → archivé</span>
+                  </div>
+                </div>
+                <div class="flux-icon"><i class="ti ti-filter" style="color:var(--amber-600)"></i></div>
+              </div>
+
+              <div class="flux-arrow">↓</div>
+
+              <div class="flux-step">
+                <div class="flux-num" style="background:var(--teal-50);color:var(--teal-600)">4</div>
+                <div class="flux-body">
+                  <div class="flux-title">Scoring automatique (0–100)</div>
+                  <div class="flux-desc">Chaque AO reçoit un score calculé sur 5 critères pondérés : budget estimé (30 pts), délai avant deadline (25 pts), notoriété de l'organisme (20 pts), pertinence sectorielle (15 pts), contact accessible (10 pts).</div>
+                </div>
+                <div class="flux-icon"><i class="ti ti-chart-bar" style="color:var(--teal-600)"></i></div>
+              </div>
+
+              <div class="flux-arrow">↓</div>
+
+              <div class="flux-step">
+                <div class="flux-num" style="background:var(--coral-50);color:var(--coral-600)">5</div>
+                <div class="flux-body">
+                  <div class="flux-title">Enrichissement du contact (si score ≥ 60)</div>
+                  <div class="flux-desc">Pour les AO qualifiés, l'agent effectue une recherche complémentaire : scraping du site de l'organisme, recherche LinkedIn du décideur, extraction email/téléphone. Ces données enrichissent automatiquement la fiche lead.</div>
+                </div>
+                <div class="flux-icon"><i class="ti ti-user-search" style="color:var(--coral-600)"></i></div>
+              </div>
+
+              <div class="flux-arrow">↓</div>
+
+              <div class="flux-step" style="border:none">
+                <div class="flux-num" style="background:var(--green-50);color:var(--green-teal)">6</div>
+                <div class="flux-body">
+                  <div class="flux-title">Création dans la base + notifications</div>
+                  <div class="flux-desc">L'AO est enregistré dans la base de données, un lead CRM est créé automatiquement si score ≥ seuil HOT, et une notification email est envoyée au commercial responsable. Le dashboard se met à jour au prochain chargement.</div>
+                </div>
+                <div class="flux-icon"><i class="ti ti-database" style="color:var(--green-teal)"></i></div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /sodipresse -->
+
+      <!-- ─── ÉVÉNEMENTS ─── -->
+      <div id="page-evenements" class="page-content">
+
+        <!-- Onglets Événements -->
+        <div style="display:flex;gap:0;margin-bottom:20px;border-bottom:0.5px solid var(--border)">
+          <button class="sm-tab active" onclick="showTab('evt','liste',this)"><i class="ti ti-calendar-event"></i> Événements détectés</button>
+          <button class="sm-tab" onclick="showTab('evt','config',this)"><i class="ti ti-settings"></i> Paramétrage détection</button>
+          <button class="sm-tab" onclick="showTab('evt','flux',this)"><i class="ti ti-git-branch"></i> Flux de traitement</button>
+        </div>
+
+        <!-- ONGLET LISTE -->
+        <div id="evt-liste">
+          <div class="filter-bar">
+            <button class="filter-btn active" onclick="setFilter(this)">Tous (23)</button>
+            <button class="filter-btn" onclick="setFilter(this)">Professionnel (9)</button>
+            <button class="filter-btn" onclick="setFilter(this)">Tech (4)</button>
+            <button class="filter-btn" onclick="setFilter(this)">Culture (5)</button>
+            <button class="filter-btn" onclick="setFilter(this)">Sport (3)</button>
+            <button class="filter-btn" onclick="setFilter(this)">Musique (2)</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Dates</th><th>Événement</th><th>Ville</th><th>Catégorie</th><th>Exposants attendus</th><th>Source</th><th>Opportunité</th></tr>
+              </thead>
+              <tbody>
+                <tr><td style="white-space:nowrap">28–30 juin</td><td><div class="td-name">GITEX Africa 2026</div><div class="td-sub">Palais des Congrès</div></td><td>Marrakech</td><td><span class="badge b-tech">Tech</span></td><td>~200 entreprises</td><td><span class="tag">LinkedIn Events</span></td><td><button class="btn btn-sm">Prospecter</button></td></tr>
+                <tr><td style="white-space:nowrap">5–9 juillet</td><td><div class="td-name">SIAM — Salon de l'Agriculture</div><div class="td-sub">OFEC Meknès</div></td><td>Meknès</td><td><span class="badge b-pro">Pro</span></td><td>~500 exposants</td><td><span class="tag">Google</span></td><td><button class="btn btn-sm">Prospecter</button></td></tr>
+                <tr><td style="white-space:nowrap">12–13 juillet</td><td><div class="td-name">Festival des Arts de la Rue</div><div class="td-sub">Anfa Park</div></td><td>Casablanca</td><td><span class="badge b-culture">Culture</span></td><td>~30 associations</td><td><span class="tag">Facebook</span></td><td><button class="btn btn-sm">Prospecter</button></td></tr>
+                <tr><td style="white-space:nowrap">20 juillet</td><td><div class="td-name">Gala Championnat National Football</div><div class="td-sub">Complexe Mohammed V</div></td><td>Rabat</td><td><span class="badge b-sport">Sport</span></td><td>—</td><td><span class="tag">Presse</span></td><td><button class="btn btn-sm">Prospecter</button></td></tr>
+                <tr><td style="white-space:nowrap">2–4 sept.</td><td><div class="td-name">Forum National de l'Investissement</div><div class="td-sub">CIC</div></td><td>Casablanca</td><td><span class="badge b-pro">Pro</span></td><td>~120 entreprises</td><td><span class="tag">Google</span></td><td><button class="btn btn-sm">Prospecter</button></td></tr>
+                <tr><td style="white-space:nowrap">15–17 sept.</td><td><div class="td-name">Salon de l'Immobilier SIMI</div><div class="td-sub">OFEC</div></td><td>Casablanca</td><td><span class="badge b-pro">Pro</span></td><td>~80 exposants</td><td><span class="tag">LinkedIn</span></td><td><button class="btn btn-sm">Prospecter</button></td></tr>
+                <tr><td style="white-space:nowrap">5 oct.</td><td><div class="td-name">Mawazine — Festival Rythmes du Monde</div><div class="td-sub">OLM Souissi</div></td><td>Rabat</td><td><span class="badge b-culture">Musique</span></td><td>—</td><td><span class="tag">Site officiel</span></td><td><button class="btn btn-sm">Prospecter</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ONGLET CONFIG ÉVÉNEMENTS -->
+        <div id="evt-config" style="display:none">
+          <div class="info-banner" style="background:var(--teal-50);border-color:#7DCFB3">
+            <i class="ti ti-info-circle" style="color:var(--teal-600)"></i>
+            <div style="flex:1;color:var(--teal-600)">Ce formulaire configure l'agent de détection d'événements. Indiquez ce que vous souhaitez scraper, où et quand.</div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+
+            <!-- Sources à activer -->
+            <div class="card">
+              <div class="card-header"><div class="card-title"><i class="ti ti-radar"></i> Sources de détection</div></div>
+              <div style="display:flex;flex-direction:column;gap:8px;font-size:12px">
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid var(--border)">
+                  <div style="display:flex;align-items:center;gap:8px"><i class="ti ti-brand-google" style="color:#4285F4"></i><div><div style="font-weight:500">Google Search</div><div style="color:var(--text-tertiary);font-size:10px">Recherches automatiques planifiées</div></div></div>
+                  <label style="position:relative;display:inline-block;width:36px;height:20px"><input type="checkbox" checked style="opacity:0;width:0;height:0"><span style="position:absolute;inset:0;background:#534AB7;border-radius:10px;cursor:pointer"></span></label>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid var(--border)">
+                  <div style="display:flex;align-items:center;gap:8px"><i class="ti ti-brand-linkedin" style="color:#0077B5"></i><div><div style="font-weight:500">LinkedIn Events</div><div style="color:var(--text-tertiary);font-size:10px">Événements géolocalisés Maroc</div></div></div>
+                  <label style="position:relative;display:inline-block;width:36px;height:20px"><input type="checkbox" checked style="opacity:0;width:0;height:0"><span style="position:absolute;inset:0;background:#534AB7;border-radius:10px;cursor:pointer"></span></label>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid var(--border)">
+                  <div style="display:flex;align-items:center;gap:8px"><i class="ti ti-brand-facebook" style="color:#1877F2"></i><div><div style="font-weight:500">Facebook Events</div><div style="color:var(--text-tertiary);font-size:10px">Pages d'organisateurs marocains</div></div></div>
+                  <label style="position:relative;display:inline-block;width:36px;height:20px"><input type="checkbox" checked style="opacity:0;width:0;height:0"><span style="position:absolute;inset:0;background:#534AB7;border-radius:10px;cursor:pointer"></span></label>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid var(--border)">
+                  <div style="display:flex;align-items:center;gap:8px"><i class="ti ti-news" style="color:var(--amber-600)"></i><div><div style="font-weight:500">Presse marocaine</div><div style="color:var(--text-tertiary);font-size:10px">L'Économiste, Médias24, Hespress</div></div></div>
+                  <label style="position:relative;display:inline-block;width:36px;height:20px"><input type="checkbox" checked style="opacity:0;width:0;height:0"><span style="position:absolute;inset:0;background:#534AB7;border-radius:10px;cursor:pointer"></span></label>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid var(--border)">
+                  <div style="display:flex;align-items:center;gap:8px"><i class="ti ti-calendar" style="color:var(--teal-600)"></i><div><div style="font-weight:500">Sites spécialisés</div><div style="color:var(--text-tertiary);font-size:10px">wanasafar.com, agenda-maroc.ma</div></div></div>
+                  <label style="position:relative;display:inline-block;width:36px;height:20px"><input type="checkbox" checked style="opacity:0;width:0;height:0"><span style="position:absolute;inset:0;background:#534AB7;border-radius:10px;cursor:pointer"></span></label>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0">
+                  <div style="display:flex;align-items:center;gap:8px"><i class="ti ti-building" style="color:var(--gray-600)"></i><div><div style="font-weight:500">Sites ministères & OFEC</div><div style="color:var(--text-tertiary);font-size:10px">Annonces officielles foires & salons</div></div></div>
+                  <label style="position:relative;display:inline-block;width:36px;height:20px"><input type="checkbox" style="opacity:0;width:0;height:0"><span style="position:absolute;inset:0;background:#ccc;border-radius:10px;cursor:pointer"></span></label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Zones & catégories -->
+            <div>
+              <div class="card" style="margin-bottom:14px">
+                <div class="card-header"><div class="card-title"><i class="ti ti-map-pin"></i> Zones géographiques</div></div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">
+                  <label style="display:flex;align-items:center;gap:6px;padding:5px;border:0.5px solid var(--border);border-radius:6px;cursor:pointer"><input type="checkbox" checked> Casablanca</label>
+                  <label style="display:flex;align-items:center;gap:6px;padding:5px;border:0.5px solid var(--border);border-radius:6px;cursor:pointer"><input type="checkbox" checked> Rabat</label>
+                  <label style="display:flex;align-items:center;gap:6px;padding:5px;border:0.5px solid var(--border);border-radius:6px;cursor:pointer"><input type="checkbox" checked> Marrakech</label>
+                  <label style="display:flex;align-items:center;gap:6px;padding:5px;border:0.5px solid var(--border);border-radius:6px;cursor:pointer"><input type="checkbox" checked> Fès</label>
+                  <label style="display:flex;align-items:center;gap:6px;padding:5px;border:0.5px solid var(--border);border-radius:6px;cursor:pointer"><input type="checkbox" checked> Meknès</label>
+                  <label style="display:flex;align-items:center;gap:6px;padding:5px;border:0.5px solid var(--border);border-radius:6px;cursor:pointer"><input type="checkbox"> Tanger</label>
+                  <label style="display:flex;align-items:center;gap:6px;padding:5px;border:0.5px solid var(--border);border-radius:6px;cursor:pointer"><input type="checkbox"> Agadir</label>
+                  <label style="display:flex;align-items:center;gap:6px;padding:5px;border:0.5px solid var(--border);border-radius:6px;cursor:pointer"><input type="checkbox"> Tout le Maroc</label>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header"><div class="card-title"><i class="ti ti-category"></i> Catégories à surveiller</div></div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">
+                  <label style="display:flex;align-items:center;gap:6px;padding:5px;border:0.5px solid var(--border);border-radius:6px;cursor:pointer"><input type="checkbox" checked> Salons professionnels</label>
+                  <label style="display:flex;align-items:center;gap:6px;padding:5px;border:0.5px solid var(--border);border-radius:6px;cursor:pointer"><input type="checkbox" checked> Conférences & forums</label>
+                  <label style="display:flex;align-items:center;gap:6px;padding:5px;border:0.5px solid var(--border);border-radius:6px;cursor:pointer"><input type="checkbox" checked> Galas & cérémonies</label>
+                  <label style="display:flex;align-items:center;gap:6px;padding:5px;border:0.5px solid var(--border);border-radius:6px;cursor:pointer"><input type="checkbox" checked> Foires & expositions</label>
+                  <label style="display:flex;align-items:center;gap:6px;padding:5px;border:0.5px solid var(--border);border-radius:6px;cursor:pointer"><input type="checkbox" checked> Événements sportifs</label>
+                  <label style="display:flex;align-items:center;gap:6px;padding:5px;border:0.5px solid var(--border);border-radius:6px;cursor:pointer"><input type="checkbox"> Festivals culturels</label>
+                  <label style="display:flex;align-items:center;gap:6px;padding:5px;border:0.5px solid var(--border);border-radius:6px;cursor:pointer"><input type="checkbox"> Concerts & musique</label>
+                  <label style="display:flex;align-items:center;gap:6px;padding:5px;border:0.5px solid var(--border);border-radius:6px;cursor:pointer"><input type="checkbox" checked> Événements institutionnels</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Critères de pertinence -->
+            <div class="card">
+              <div class="card-header"><div class="card-title"><i class="ti ti-adjustments"></i> Critères de pertinence commerciale</div></div>
+              <div style="display:flex;flex-direction:column;gap:12px">
+                <div>
+                  <div class="modal-label" style="margin-bottom:5px">Nombre minimum d'exposants / participants attendus</div>
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <input type="range" min="0" max="500" value="20" step="10" style="flex:1;accent-color:var(--purple-600)" oninput="document.getElementById('expMin').textContent=this.value">
+                    <span id="expMin" style="font-size:13px;font-weight:600;color:var(--purple-600);min-width:36px">20</span>
+                  </div>
+                </div>
+                <div>
+                  <div class="modal-label" style="margin-bottom:5px">Horizon de détection (événements dans les X prochains mois)</div>
+                  <select class="modal-input">
+                    <option>1 mois</option>
+                    <option selected>3 mois</option>
+                    <option>6 mois</option>
+                    <option>12 mois</option>
+                  </select>
+                </div>
+                <div>
+                  <div class="modal-label" style="margin-bottom:5px">Mots-clés déclencheurs de détection</div>
+                  <textarea class="modal-input" style="min-height:70px">salon, foire, exposition, conférence, forum, gala, cérémonie, inauguration, séminaire, convention, sommet, colloque, journée professionnelle</textarea>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:7px;font-size:12px">
+                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" checked> Créer automatiquement un lead si opportunité détectée</label>
+                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" checked> Identifier l'organisateur et enrichir le contact</label>
+                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox"> Exclure les événements déjà dans la base</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Planification -->
+            <div class="card">
+              <div class="card-header"><div class="card-title"><i class="ti ti-clock"></i> Planification du scan</div></div>
+              <div style="display:flex;flex-direction:column;gap:12px">
+                <div>
+                  <div class="modal-label" style="margin-bottom:5px">Heure du scan nocturne principal</div>
+                  <input class="modal-input" type="time" value="03:00">
+                </div>
+                <div>
+                  <div class="modal-label" style="margin-bottom:5px">Fréquence</div>
+                  <select class="modal-input">
+                    <option selected>Quotidienne (recommandée)</option>
+                    <option>2x par jour (matin + soir)</option>
+                    <option>Hebdomadaire</option>
+                  </select>
+                </div>
+                <div>
+                  <div class="modal-label" style="margin-bottom:5px">Requêtes Google personnalisées</div>
+                  <textarea class="modal-input" style="min-height:80px">salon événementiel Maroc 2026
+foire exposition Casablanca Marrakech Rabat
+conférence forum Maroc {année}
+gala cérémonie Maroc entreprise</textarea>
+                  <div style="font-size:10px;color:var(--text-tertiary);margin-top:4px">Une requête par ligne. Utilisez {année} pour l'année en cours.</div>
+                </div>
+                <button class="btn btn-primary" style="width:100%"><i class="ti ti-check"></i> Enregistrer la configuration</button>
+                <button class="btn" style="width:100%" onclick=""><i class="ti ti-player-play"></i> Lancer un scan maintenant</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ONGLET FLUX ÉVÉNEMENTS -->
+        <div id="evt-flux" style="display:none">
+          <div class="card">
+            <div class="card-header"><div class="card-title"><i class="ti ti-git-branch"></i> Flux de traitement — Agent Détection d'événements</div></div>
+            <div style="display:flex;flex-direction:column;gap:0">
+
+              <div class="flux-step">
+                <div class="flux-num" style="background:var(--purple-50);color:var(--purple-600)">1</div>
+                <div class="flux-body">
+                  <div class="flux-title">Déclenchement (03h00 chaque nuit)</div>
+                  <div class="flux-desc">L'agent démarre son cycle de scan sur l'ensemble des sources activées : Google Search API, LinkedIn Events, Facebook Events, presse marocaine (flux RSS), sites spécialisés en événementiel.</div>
+                </div>
+                <div class="flux-icon"><i class="ti ti-clock" style="color:var(--purple-600)"></i></div>
+              </div>
+              <div class="flux-arrow">↓</div>
+
+              <div class="flux-step">
+                <div class="flux-num" style="background:var(--blue-50);color:var(--blue-600)">2</div>
+                <div class="flux-body">
+                  <div class="flux-title">Collecte & extraction des données brutes</div>
+                  <div class="flux-desc">Pour chaque source, l'agent exécute les requêtes configurées et extrait : nom de l'événement, dates, lieu (ville, salle), organisateur, nombre d'exposants ou participants annoncés, URL source, description.</div>
+                </div>
+                <div class="flux-icon"><i class="ti ti-database-import" style="color:var(--blue-600)"></i></div>
+              </div>
+              <div class="flux-arrow">↓</div>
+
+              <div class="flux-step">
+                <div class="flux-num" style="background:var(--amber-50);color:var(--amber-600)">3</div>
+                <div class="flux-body">
+                  <div class="flux-title">Déduplication & normalisation</div>
+                  <div class="flux-desc">Le même événement peut être détecté sur plusieurs sources. L'agent fusionne les doublons, normalise les formats de date, et enrichit chaque entrée avec les données les plus complètes disponibles.</div>
+                </div>
+                <div class="flux-icon"><i class="ti ti-copy" style="color:var(--amber-600)"></i></div>
+              </div>
+              <div class="flux-arrow">↓</div>
+
+              <div class="flux-step">
+                <div class="flux-num" style="background:var(--teal-50);color:var(--teal-600)">4</div>
+                <div class="flux-body">
+                  <div class="flux-title">Filtrage & classification IA</div>
+                  <div class="flux-desc">L'IA vérifie : zone géographique ✓, catégorie ✓, horizon temporel ✓, nombre minimum d'exposants ✓. Chaque événement validé reçoit une catégorie (Sport, Pro, Culture, Tech…) et un score d'opportunité commerciale.</div>
+                  <div style="display:flex;gap:8px;margin-top:8px">
+                    <span style="font-size:11px;padding:2px 8px;background:#E1F5EE;color:#0F6E56;border-radius:10px">✅ Validé → affiché</span>
+                    <span style="font-size:11px;padding:2px 8px;background:var(--gray-50);color:var(--gray-600);border-radius:10px">❌ Hors critères → archivé</span>
+                  </div>
+                </div>
+                <div class="flux-icon"><i class="ti ti-sparkles" style="color:var(--teal-600)"></i></div>
+              </div>
+              <div class="flux-arrow">↓</div>
+
+              <div class="flux-step">
+                <div class="flux-num" style="background:var(--coral-50);color:var(--coral-600)">5</div>
+                <div class="flux-body">
+                  <div class="flux-title">Identification de l'organisateur & enrichissement</div>
+                  <div class="flux-desc">Pour chaque événement validé, l'agent tente de trouver : le nom de l'organisateur, son site web, un contact (email, téléphone, profil LinkedIn). Ces données alimentent automatiquement un lead dans le CRM.</div>
+                </div>
+                <div class="flux-icon"><i class="ti ti-user-search" style="color:var(--coral-600)"></i></div>
+              </div>
+              <div class="flux-arrow">↓</div>
+
+              <div class="flux-step" style="border:none">
+                <div class="flux-num" style="background:var(--green-50);color:var(--green-teal)">6</div>
+                <div class="flux-body">
+                  <div class="flux-title">Enregistrement & mise à jour du calendrier</div>
+                  <div class="flux-desc">Les événements sont ajoutés au calendrier de veille, les leads associés créés dans le CRM, et le dashboard mis à jour. Si un événement approche à moins de 30 jours, une alerte prioritaire est générée.</div>
+                </div>
+                <div class="flux-icon"><i class="ti ti-calendar-check" style="color:var(--green-teal)"></i></div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /evenements -->
+
+      <!-- ─── CONCURRENCE ─── -->
+      <div id="page-concurrence" class="page-content">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+          <div class="metric-card"><div class="metric-label">Concurrents suivis</div><div class="metric-value">6</div></div>
+          <div class="metric-card"><div class="metric-label">Alertes actives</div><div class="metric-value" style="color:var(--coral-400)">3</div></div>
+          <div class="metric-card"><div class="metric-label">AO en commun (30j)</div><div class="metric-value">5</div></div>
+        </div>
+
+        <div class="concur-card">
+          <div class="concur-header">
+            <div class="concur-avatar" style="background:var(--coral-50);color:var(--coral-600)">ES</div>
+            <div style="flex:1">
+              <div class="td-name">EventStand Pro</div>
+              <div class="td-sub">Stand · Décoration · Casablanca</div>
+            </div>
+            <span class="badge b-hot"><i class="ti ti-alert-triangle"></i> Niveau élevé</span>
+          </div>
+          <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px">
+            Détecté sur <strong>3 appels d'offres communs</strong> ce mois · Présent au Salon Automobile (Stand OCP) · Actif sur LinkedIn (12 publications/mois)
+          </div>
+          <div class="lead-tags">
+            <span class="tag"><i class="ti ti-calendar" style="font-size:10px"></i> Salon Auto 2026</span>
+            <span class="tag">GITEX Africa 2025</span>
+            <span class="tag">Forum Emploi ANAPEC</span>
+          </div>
+        </div>
+
+        <div class="concur-card">
+          <div class="concur-header">
+            <div class="concur-avatar" style="background:var(--amber-50);color:var(--amber-600)">DE</div>
+            <div style="flex:1">
+              <div class="td-name">Deco Events Maroc</div>
+              <div class="td-sub">Décoration événementielle · Rabat</div>
+            </div>
+            <span class="badge b-warm">Niveau moyen</span>
+          </div>
+          <div style="font-size:12px;color:var(--text-secondary)">
+            Présent au SIAM 2025 · 1 AO commun identifié · Actif sur Instagram (scénographie florale)
+          </div>
+        </div>
+
+        <div class="concur-card">
+          <div class="concur-header">
+            <div class="concur-avatar" style="background:var(--blue-50);color:var(--blue-600)">LE</div>
+            <div style="flex:1">
+              <div class="td-name">LogiEvent Casa</div>
+              <div class="td-sub">Logistique événementielle · Casablanca</div>
+            </div>
+            <span class="badge b-warm">Niveau moyen</span>
+          </div>
+          <div style="font-size:12px;color:var(--text-secondary)">
+            Détecté Forum Emploi (même AO) · Spécialisé logistique pure · Pas de stand ni décoration → complémentaire potentiel
+          </div>
+        </div>
+      </div><!-- /concurrence -->
+
+      <!-- ─── TECHNOLOGIE ─── -->
+      <div id="page-technologie" class="page-content">
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><div class="card-title"><i class="ti ti-device-tv"></i> Affichage & Scénographie</div><span style="font-size:11px;color:var(--text-tertiary)">4 articles</span></div>
+            <div class="tech-article"><div class="tech-cat-dot" style="background:var(--purple-600)"></div><div><div class="tech-title">Écrans LED modulaires ultra-fins — tendance stands 2026</div><div class="tech-source">EventTech Magazine · 12 juin 2026</div></div></div>
+            <div class="tech-article"><div class="tech-cat-dot" style="background:var(--purple-600)"></div><div><div class="tech-title">Impression 3D pour décors événementiels sur mesure</div><div class="tech-source">Expo Architecture Blog · 8 juin 2026</div></div></div>
+            <div class="tech-article"><div class="tech-cat-dot" style="background:var(--purple-600)"></div><div><div class="tech-title">Totem digital interactif : ROI pour exposants B2B</div><div class="tech-source">LinkedIn · 5 juin 2026</div></div></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title"><i class="ti ti-reality-ar"></i> Réalité Augmentée & VR</div><span style="font-size:11px;color:var(--text-tertiary)">2 articles</span></div>
+            <div class="tech-article"><div class="tech-cat-dot" style="background:var(--blue-600)"></div><div><div class="tech-title">AR sur stands interactifs — retours d'expérience GITEX Dubai</div><div class="tech-source">LinkedIn · 10 juin 2026</div></div></div>
+            <div class="tech-article"><div class="tech-cat-dot" style="background:var(--blue-600)"></div><div><div class="tech-title">Casques VR pour showrooms produits en salon</div><div class="tech-source">Event Manager Blog · 3 juin 2026</div></div></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title"><i class="ti ti-robot"></i> IA appliquée à l'événementiel</div><span style="font-size:11px;color:var(--text-tertiary)">6 articles</span></div>
+            <div class="tech-article"><div class="tech-cat-dot" style="background:var(--green-teal)"></div><div><div class="tech-title">Chatbots d'accueil sur stands — analyse ROI 2025</div><div class="tech-source">Eventex · 8 juin 2026</div></div></div>
+            <div class="tech-article"><div class="tech-cat-dot" style="background:var(--green-teal)"></div><div><div class="tech-title">IA générative pour personnalisation de stands en temps réel</div><div class="tech-source">Forbes Events · 6 juin 2026</div></div></div>
+            <div class="tech-article"><div class="tech-cat-dot" style="background:var(--green-teal)"></div><div><div class="tech-title">Reconnaissance faciale pour comptage visiteurs</div><div class="tech-source">Event Industry News · 1 juin 2026</div></div></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title"><i class="ti ti-tool"></i> Outils de gestion</div><span style="font-size:11px;color:var(--text-tertiary)">3 articles</span></div>
+            <div class="tech-article"><div class="tech-cat-dot" style="background:var(--amber-600)"></div><div><div class="tech-title">Logiciels de planification événementielle — comparatif 2026</div><div class="tech-source">Event Manager Blog · 5 juin 2026</div></div></div>
+            <div class="tech-article"><div class="tech-cat-dot" style="background:var(--amber-600)"></div><div><div class="tech-title">Gestion logistique en temps réel sur tablet & mobile</div><div class="tech-source">Eventbrite Blog · 2 juin 2026</div></div></div>
+          </div>
+        </div>
+      </div><!-- /technologie -->
+
+      <!-- ─── ASSISTANT IA ─── -->
+      <div id="page-assistant" class="page-content" style="padding:0;display:none;flex-direction:column;height:calc(100vh - 62px)">
+        <div class="chat-area" id="chatMessages">
+          <div class="msg-wrap ai">
+            <div class="msg-sender"><i class="ti ti-robot"></i> Assistant EventPro IA</div>
+            <div class="msg-bubble msg-ai-b">
+              Bonjour Karim ! Je suis connecté à toutes les données de la plateforme — leads, AO Sodipresse, événements, concurrents, et activité des agents.<br><br>
+              <strong>Ce matin :</strong> 3 leads HOT nécessitent votre attention, dont 2 avec des deadlines dans moins de 5 jours.<br><br>
+              Comment puis-je vous aider ?
+            </div>
+          </div>
+        </div>
+        <div class="quick-btns">
+          <button class="quick-btn" onclick="sendQuick('Quels sont les leads HOT aujourd\'hui ?')">🔴 Leads HOT</button>
+          <button class="quick-btn" onclick="sendQuick('Résume les AO Sodipresse de cette nuit')">📧 AO Sodipresse cette nuit</button>
+          <button class="quick-btn" onclick="sendQuick('Quels événements ont lieu en juillet au Maroc ?')">📅 Événements juillet</button>
+          <button class="quick-btn" onclick="sendQuick('Génère un email pour l\'AO du Ministère de l\'Industrie')">✉️ Email prospection</button>
+          <button class="quick-btn" onclick="sendQuick('Quels sont nos concurrents les plus actifs ce mois ?')">👁 Concurrents actifs</button>
+          <button class="quick-btn" onclick="sendQuick('Quel est l\'état du pipeline commercial ?')">📊 Pipeline</button>
+        </div>
+        <div class="chat-footer">
+          <input class="chat-input-field" id="chatInput" type="text" placeholder="Posez une question sur vos données..." onkeydown="if(event.key==='Enter')sendFromInput()">
+          <button class="btn btn-primary" onclick="sendFromInput()"><i class="ti ti-send"></i></button>
+        </div>
+      </div><!-- /assistant -->
+
+      <!-- ─── SOCIAL MEDIA ─── -->
+      <div id="page-social" class="page-content">
+
+        <!-- Onglets internes Social Media -->
+        <div style="display:flex;gap:0;margin-bottom:20px;border-bottom:0.5px solid var(--border)">
+          <button class="sm-tab active" onclick="showSMTab('calendrier',this)"><i class="ti ti-calendar"></i> Calendrier éditorial</button>
+          <button class="sm-tab" onclick="showSMTab('idees',this)"><i class="ti ti-bulb"></i> Générateur d'idées</button>
+          <button class="sm-tab" onclick="showSMTab('publies',this)"><i class="ti ti-chart-bar"></i> Posts publiés</button>
+          <button class="sm-tab" onclick="showSMTab('config',this)"><i class="ti ti-settings"></i> Configuration</button>
+        </div>
+
+        <!-- ONGLET CALENDRIER -->
+        <div id="sm-calendrier" class="sm-panel">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px">
+            <div class="metric-card"><div class="metric-label">Posts publiés (30j)</div><div class="metric-value">28</div></div>
+            <div class="metric-card"><div class="metric-label">Planifiés</div><div class="metric-value" style="color:var(--purple-600)">7</div></div>
+            <div class="metric-card"><div class="metric-label">Taux d'engagement</div><div class="metric-value">4.8%</div><div class="metric-delta delta-up">+1.2%</div></div>
+            <div class="metric-card"><div class="metric-label">Impressions totales</div><div class="metric-value">14.2K</div></div>
+          </div>
+
+          <!-- Navigation semaine -->
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <div style="display:flex;align-items:center;gap:10px">
+              <button class="btn btn-sm" onclick="changeWeek(-1)"><i class="ti ti-chevron-left"></i></button>
+              <span style="font-size:14px;font-weight:600" id="weekLabel">16 – 22 juin 2026</span>
+              <button class="btn btn-sm" onclick="changeWeek(1)"><i class="ti ti-chevron-right"></i></button>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-sm" onclick="openModal('modalNewPost')"><i class="ti ti-plus"></i> Nouveau post</button>
+              <button class="btn btn-sm btn-primary" onclick="openModal('modalIdeaGen')"><i class="ti ti-sparkles"></i> Générer avec IA</button>
+            </div>
+          </div>
+
+          <!-- Grille calendrier mensuelle -->
+          <div id="calGrid"></div>
+        </div>
+
+        <!-- ONGLET IDÉES -->
+        <div id="sm-idees" class="sm-panel" style="display:none">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <!-- Panneau gauche : saisie idée -->
+            <div>
+              <div class="card" style="margin-bottom:14px">
+                <div class="card-header"><div class="card-title"><i class="ti ti-sparkles" style="color:var(--purple-600)"></i> Générer un post depuis une idée</div></div>
+                <div style="margin-bottom:12px">
+                  <div class="modal-label" style="margin-bottom:6px">Votre idée de post</div>
+                  <textarea id="ideaInput" class="modal-input" style="min-height:80px" placeholder="Ex: montrer notre réalisation du stand GITEX, parler de nos services de location de mobilier, annoncer notre disponibilité pour le SIAM..."></textarea>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+                  <div>
+                    <div class="modal-label" style="margin-bottom:5px">Réseau cible</div>
+                    <select class="modal-input" id="ideaNetwork">
+                      <option>LinkedIn</option>
+                      <option>Instagram</option>
+                      <option>Facebook</option>
+                      <option>X (Twitter)</option>
+                      <option>Tous les réseaux</option>
+                    </select>
+                  </div>
+                  <div>
+                    <div class="modal-label" style="margin-bottom:5px">Ton souhaité</div>
+                    <select class="modal-input" id="ideaTone">
+                      <option>Professionnel</option>
+                      <option>Inspirant</option>
+                      <option>Promotionnel</option>
+                      <option>Éducatif</option>
+                      <option>Storytelling</option>
+                    </select>
+                  </div>
+                </div>
+                <div style="margin-bottom:12px">
+                  <div class="modal-label" style="margin-bottom:5px">Image générée par IA</div>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap">
+                    <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="radio" name="imgtype" checked> Réalisation client (stand/déco)</label>
+                    <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="radio" name="imgtype"> Ambiance événement</label>
+                    <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="radio" name="imgtype"> Infographie</label>
+                    <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="radio" name="imgtype"> Pas d'image</label>
+                  </div>
+                </div>
+                <button class="btn btn-primary" style="width:100%" onclick="generatePost()"><i class="ti ti-sparkles"></i> Générer le texte et l'image</button>
+              </div>
+
+              <!-- Idées suggérées par l'IA -->
+              <div class="card">
+                <div class="card-header"><div class="card-title"><i class="ti ti-lightbulb"></i> Idées suggérées par l'IA</div><span style="font-size:11px;color:var(--text-tertiary)">Basées sur votre actualité</span></div>
+                <div id="suggestedIdeas">
+                  <div class="idea-suggestion" onclick="fillIdea(this)">
+                    <div class="idea-icon" style="background:var(--blue-50);color:var(--blue-600)"><i class="ti ti-brand-linkedin"></i></div>
+                    <div><div class="idea-title">Présenter votre participation GITEX Africa</div><div class="idea-sub">LinkedIn · Professionnel · Événement dans 13 jours</div></div>
+                  </div>
+                  <div class="idea-suggestion" onclick="fillIdea(this)">
+                    <div class="idea-icon" style="background:#FFF0F5;color:#E4405F"><i class="ti ti-brand-instagram"></i></div>
+                    <div><div class="idea-title">Before/After stand OCP — Salon Automobile</div><div class="idea-sub">Instagram · Visuel · Réalisation récente</div></div>
+                  </div>
+                  <div class="idea-suggestion" onclick="fillIdea(this)">
+                    <div class="idea-icon" style="background:var(--purple-50);color:var(--purple-600)"><i class="ti ti-brand-linkedin"></i></div>
+                    <div><div class="idea-title">Conseils pour réussir son stand en salon professionnel</div><div class="idea-sub">LinkedIn · Éducatif · Contenu evergreen</div></div>
+                  </div>
+                  <div class="idea-suggestion" onclick="fillIdea(this)">
+                    <div class="idea-icon" style="background:#E8F4FF;color:#1877F2"><i class="ti ti-brand-facebook"></i></div>
+                    <div><div class="idea-title">Offre spéciale SIAM — devis gratuit sous 24h</div><div class="idea-sub">Facebook · Promotionnel · Salon dans 20 jours</div></div>
+                  </div>
+                  <div class="idea-suggestion" onclick="fillIdea(this)">
+                    <div class="idea-icon" style="background:var(--amber-50);color:var(--amber-600)"><i class="ti ti-brand-instagram"></i></div>
+                    <div><div class="idea-title">Nos services de location de mobilier haut de gamme</div><div class="idea-sub">Instagram · Showcase produit · Catalogue</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Panneau droit : prévisualisation générée -->
+            <div>
+              <div class="card" id="previewCard" style="min-height:420px">
+                <div class="card-header"><div class="card-title"><i class="ti ti-eye"></i> Prévisualisation du post</div></div>
+                <div id="previewContent" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:340px;color:var(--text-tertiary);font-size:13px;text-align:center;gap:10px">
+                  <i class="ti ti-sparkles" style="font-size:36px;color:var(--purple-200)"></i>
+                  <div>Saisissez une idée et cliquez sur<br><strong style="color:var(--text-secondary)">Générer le texte et l'image</strong></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ONGLET PUBLIÉS -->
+        <div id="sm-publies" class="sm-panel" style="display:none">
+          <div class="sm-grid">
+            <div class="post-card">
+              <div class="post-header"><i class="ti ti-brand-linkedin platform-icon" style="color:#0077B5"></i><span class="post-platform">LinkedIn</span><span class="post-time">Publié · 15 juin 09h00</span></div>
+              <div class="post-img-placeholder" style="background:linear-gradient(135deg,#EEEDFE,#AFA9EC);height:100px;border-radius:var(--radius-md);margin-bottom:8px;display:flex;align-items:center;justify-content:center;color:var(--purple-600);font-size:12px"><i class="ti ti-photo" style="font-size:24px"></i></div>
+              <div class="post-content">🏆 Fiers d'avoir accompagné Attijariwafa Bank dans la réalisation de leur espace d'exposition au Forum des Dirigeants 2026. Conception, décoration, mobilier haut de gamme.</div>
+              <div class="post-hashtags">#EventPro #Événementiel #Stand #Maroc</div>
+              <div class="post-stats"><span><i class="ti ti-heart"></i> 47</span><span><i class="ti ti-message"></i> 8</span><span><i class="ti ti-share"></i> 12</span><span style="margin-left:auto;color:var(--teal-600)">↗ 1.2K impressions</span></div>
+            </div>
+            <div class="post-card">
+              <div class="post-header"><i class="ti ti-brand-instagram platform-icon" style="color:#E4405F"></i><span class="post-platform">Instagram</span><span class="post-time">Publié · 15 juin 09h00</span></div>
+              <div style="background:linear-gradient(135deg,#FFF0F5,#F4C0D1);height:100px;border-radius:var(--radius-md);margin-bottom:8px;display:flex;align-items:center;justify-content:center;color:#D4537E;font-size:12px"><i class="ti ti-photo" style="font-size:24px"></i></div>
+              <div class="post-content">✨ Quand chaque détail compte. Notre équipe a créé une scénographie parfaite pour le Gala de fin d'année. 400 invités émerveillés. 🎊</div>
+              <div class="post-hashtags">#Stand #Décoration #Événement #Marrakech</div>
+              <div class="post-stats"><span><i class="ti ti-heart"></i> 124</span><span><i class="ti ti-message"></i> 18</span><span style="margin-left:auto;color:var(--teal-600)">↗ 3.4K impressions</span></div>
+            </div>
+            <div class="post-card">
+              <div class="post-header"><i class="ti ti-brand-facebook platform-icon" style="color:#1877F2"></i><span class="post-platform">Facebook</span><span class="post-time">Publié · 12 juin</span></div>
+              <div style="background:linear-gradient(135deg,#E8F4FF,#B5D4F4);height:100px;border-radius:var(--radius-md);margin-bottom:8px;display:flex;align-items:center;justify-content:center;color:#185FA5"><i class="ti ti-photo" style="font-size:24px"></i></div>
+              <div class="post-content">🎯 Organisez-vous un événement cet été ? Stands, décoration, mobilier, scène, logistique — on s'occupe de tout !</div>
+              <div class="post-hashtags">#EventMaroc #Location #Mobilier #Événementiel</div>
+              <div class="post-stats"><span><i class="ti ti-heart"></i> 89</span><span><i class="ti ti-message"></i> 14</span><span style="margin-left:auto;color:var(--teal-600)">↗ 2.1K impressions</span></div>
+            </div>
+            <div class="post-card">
+              <div class="post-header"><i class="ti ti-brand-x platform-icon" style="color:#000"></i><span class="post-platform">X (Twitter)</span><span class="post-time">Publié · 10 juin</span></div>
+              <div style="background:linear-gradient(135deg,var(--gray-50),var(--bg-secondary));height:100px;border-radius:var(--radius-md);margin-bottom:8px;display:flex;align-items:center;justify-content:center;color:var(--gray-600)"><i class="ti ti-photo" style="font-size:24px"></i></div>
+              <div class="post-content">🚀 Notre équipe mobilisée 48h avant le GITEX Africa. Installation en cours. #EventPro #GITEX2026</div>
+              <div class="post-hashtags">#EventPro #GITEX2026 #Marrakech</div>
+              <div class="post-stats"><span><i class="ti ti-heart"></i> 31</span><span><i class="ti ti-repeat"></i> 7</span><span style="margin-left:auto;color:var(--teal-600)">↗ 890 impressions</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ONGLET CONFIGURATION -->
+        <div id="sm-config" class="sm-panel" style="display:none">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div>
+              <div class="card" style="margin-bottom:14px">
+                <div class="card-header"><div class="card-title"><i class="ti ti-plug"></i> Réseaux connectés</div></div>
+                <div style="display:flex;flex-direction:column;gap:10px">
+                  <div class="network-row"><div style="display:flex;align-items:center;gap:10px"><i class="ti ti-brand-linkedin" style="font-size:20px;color:#0077B5"></i><div><div style="font-size:13px;font-weight:500">LinkedIn</div><div style="font-size:11px;color:var(--text-secondary)">EventPro Maroc · Page entreprise</div></div></div><span class="status-pill" style="font-size:11px"><div class="pulse-dot"></div> Connecté</span></div>
+                  <div class="network-row"><div style="display:flex;align-items:center;gap:10px"><i class="ti ti-brand-instagram" style="font-size:20px;color:#E4405F"></i><div><div style="font-size:13px;font-weight:500">Instagram</div><div style="font-size:11px;color:var(--text-secondary)">@eventpro.maroc · 2.4K abonnés</div></div></div><span class="status-pill" style="font-size:11px"><div class="pulse-dot"></div> Connecté</span></div>
+                  <div class="network-row"><div style="display:flex;align-items:center;gap:10px"><i class="ti ti-brand-facebook" style="font-size:20px;color:#1877F2"></i><div><div style="font-size:13px;font-weight:500">Facebook</div><div style="font-size:11px;color:var(--text-secondary)">EventPro Événementiel · 1.1K abonnés</div></div></div><span class="status-pill" style="font-size:11px"><div class="pulse-dot"></div> Connecté</span></div>
+                  <div class="network-row"><div style="display:flex;align-items:center;gap:10px"><i class="ti ti-brand-x" style="font-size:20px;color:#111"></i><div><div style="font-size:13px;font-weight:500">X (Twitter)</div><div style="font-size:11px;color:var(--text-secondary)">@eventpro_ma · 340 abonnés</div></div></div><span class="status-pill" style="font-size:11px"><div class="pulse-dot"></div> Connecté</span></div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header"><div class="card-title"><i class="ti ti-clock"></i> Horaires de publication automatiques</div></div>
+                <div style="display:flex;flex-direction:column;gap:8px;font-size:12px">
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:0.5px solid var(--border)"><span>Lundi</span><div style="display:flex;gap:6px"><span class="tag">09h00</span><span class="tag">18h00</span></div></div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:0.5px solid var(--border)"><span>Mercredi</span><div style="display:flex;gap:6px"><span class="tag">09h00</span><span class="tag">13h00</span></div></div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:0.5px solid var(--border)"><span>Vendredi</span><div style="display:flex;gap:6px"><span class="tag">10h00</span></div></div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0"><span>Samedi</span><div style="display:flex;gap:6px"><span class="tag">11h00</span></div></div>
+                </div>
+                <button class="btn btn-sm" style="margin-top:10px;width:100%"><i class="ti ti-edit"></i> Modifier les horaires</button>
+              </div>
+            </div>
+            <div>
+              <div class="card" style="margin-bottom:14px">
+                <div class="card-header"><div class="card-title"><i class="ti ti-robot"></i> Paramètres IA</div></div>
+                <div style="display:flex;flex-direction:column;gap:12px">
+                  <div><div class="modal-label" style="margin-bottom:5px">Ton de communication</div><select class="modal-input"><option>Professionnel & expert</option><option>Inspirant & créatif</option><option>Proche & humain</option></select></div>
+                  <div><div class="modal-label" style="margin-bottom:5px">Langue principale</div><select class="modal-input"><option>Français</option><option>Arabe</option><option>Anglais</option><option>Français + Darija</option></select></div>
+                  <div><div class="modal-label" style="margin-bottom:5px">Hashtags récurrents</div><input class="modal-input" type="text" value="#EventProMaroc #Événementiel #Stand #Maroc #Casablanca"></div>
+                  <div><div class="modal-label" style="margin-bottom:5px">Fréquence de génération automatique</div><select class="modal-input"><option>3 posts / semaine</option><option>5 posts / semaine</option><option>1 post / jour</option><option>Manuel uniquement</option></select></div>
+                  <div><div class="modal-label" style="margin-bottom:5px">Style visuel des images IA</div><select class="modal-input"><option>Réaliste professionnel</option><option>Flat design moderne</option><option>Couleurs vives & dynamiques</option></select></div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header"><div class="card-title"><i class="ti ti-brand-openai"></i> Sources pour la génération</div></div>
+                <div style="display:flex;flex-direction:column;gap:8px;font-size:12px">
+                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" checked> Nos réalisations récentes (CRM)</label>
+                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" checked> Événements détectés (agenda)</label>
+                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" checked> Appels d'offres gagnés</label>
+                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox"> Actualités du secteur (veille techno)</label>
+                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox"> Tendances LinkedIn du moment</label>
+                </div>
+                <button class="btn btn-primary btn-sm" style="margin-top:12px;width:100%"><i class="ti ti-check"></i> Enregistrer la configuration</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /social -->
+
+      <!-- ─── SUPPORT CLIENT ─── -->
+      <div id="page-support" class="page-content">
+
+        <!-- Onglets support -->
+        <div style="display:flex;gap:0;margin-bottom:20px;border-bottom:0.5px solid var(--border)">
+          <button class="sm-tab active" onclick="showSupTab('conversations',this)"><i class="ti ti-messages"></i> Conversations</button>
+          <button class="sm-tab" onclick="showSupTab('faq',this)"><i class="ti ti-help-circle"></i> FAQ & Questions</button>
+          <button class="sm-tab" onclick="showSupTab('articles',this)"><i class="ti ti-file-text"></i> Base de connaissances</button>
+          <button class="sm-tab" onclick="showSupTab('config-sup',this)"><i class="ti ti-settings"></i> Configuration</button>
+        </div>
+
+        <!-- ONGLET CONVERSATIONS -->
+        <div id="sup-conversations" class="sup-panel">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">
+            <div class="metric-card"><div class="metric-label">Conversations (7j)</div><div class="metric-value">38</div></div>
+            <div class="metric-card"><div class="metric-label">Résolues auto</div><div class="metric-value" style="color:var(--green-teal)">34</div><div class="metric-delta delta-up">89% taux résolution</div></div>
+            <div class="metric-card"><div class="metric-label">Escaladées</div><div class="metric-value">4</div></div>
+            <div class="metric-card"><div class="metric-label">Leads qualifiés</div><div class="metric-value" style="color:var(--purple-600)">7</div><div class="metric-delta delta-up">via chatbot</div></div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:16px">
+            <!-- Liste des conversations -->
+            <div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+                <div style="font-size:13px;font-weight:600">Toutes les conversations</div>
+                <div class="filter-bar" style="margin:0">
+                  <button class="filter-btn active" style="padding:3px 8px;font-size:11px" onclick="setFilter(this)">Toutes</button>
+                  <button class="filter-btn" style="padding:3px 8px;font-size:11px" onclick="setFilter(this)">Non lues</button>
+                  <button class="filter-btn" style="padding:3px 8px;font-size:11px" onclick="setFilter(this)">Escaladées</button>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px" id="convList">
+                <div class="conv-item active-conv" onclick="showConv(0,this)">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                    <div class="avatar" style="width:28px;height:28px;font-size:10px;background:var(--blue-50);color:var(--blue-600)">AB</div>
+                    <div style="font-size:12px;font-weight:500;flex:1">ahmed.b@maroc.ma</div>
+                    <div style="font-size:10px;color:var(--text-tertiary)">15 juin · 10h32</div>
+                  </div>
+                  <div style="font-size:11px;color:var(--text-secondary);padding-left:36px">Vous intervenez à Marrakech pour GITEX ?</div>
+                  <div style="padding-left:36px;margin-top:3px"><span class="badge b-done" style="font-size:10px">Résolu</span></div>
+                </div>
+                <div class="conv-item" onclick="showConv(1,this)">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                    <div class="avatar" style="width:28px;height:28px;font-size:10px;background:var(--coral-50);color:var(--coral-600)">SK</div>
+                    <div style="font-size:12px;font-weight:500;flex:1">sara.k@agence.ma</div>
+                    <div style="font-size:10px;color:var(--text-tertiary)">15 juin · 09h15</div>
+                  </div>
+                  <div style="font-size:11px;color:var(--text-secondary);padding-left:36px">Avez-vous des références dans le secteur bancaire ?</div>
+                  <div style="padding-left:36px;margin-top:3px"><span class="badge b-done" style="font-size:10px">Résolu</span></div>
+                </div>
+                <div class="conv-item" onclick="showConv(2,this)">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                    <div class="avatar" style="width:28px;height:28px;font-size:10px;background:var(--amber-50);color:var(--amber-600)">??</div>
+                    <div style="font-size:12px;font-weight:500;flex:1">Visiteur anonyme</div>
+                    <div style="font-size:10px;color:var(--text-tertiary)">14 juin · 16h44</div>
+                  </div>
+                  <div style="font-size:11px;color:var(--text-secondary);padding-left:36px">Tarif location mobilier pour 200 personnes</div>
+                  <div style="padding-left:36px;margin-top:3px"><span class="badge b-hot" style="font-size:10px">Escaladé</span></div>
+                </div>
+                <div class="conv-item" onclick="showConv(3,this)">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                    <div class="avatar" style="width:28px;height:28px;font-size:10px;background:var(--green-50);color:var(--green-600)">MO</div>
+                    <div style="font-size:12px;font-weight:500;flex:1">m.ouali@enterprise.ma</div>
+                    <div style="font-size:10px;color:var(--text-tertiary)">14 juin · 11h20</div>
+                  </div>
+                  <div style="font-size:11px;color:var(--text-secondary);padding-left:36px">Délai pour un stand de 50m² ?</div>
+                  <div style="padding-left:36px;margin-top:3px"><span class="badge b-done" style="font-size:10px">Résolu · Lead créé</span></div>
+                </div>
+                <div class="conv-item" onclick="showConv(4,this)">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                    <div class="avatar" style="width:28px;height:28px;font-size:10px">FH</div>
+                    <div style="font-size:12px;font-weight:500;flex:1">f.hassani@bank.ma</div>
+                    <div style="font-size:10px;color:var(--text-tertiary)">13 juin · 14h05</div>
+                  </div>
+                  <div style="font-size:11px;color:var(--text-secondary);padding-left:36px">Comment demander un devis ?</div>
+                  <div style="padding-left:36px;margin-top:3px"><span class="badge b-done" style="font-size:10px">Résolu</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Détail conversation -->
+            <div class="card" style="display:flex;flex-direction:column">
+              <div id="convHeader" style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:12px;border-bottom:0.5px solid var(--border)">
+                <div class="avatar" style="background:var(--blue-50);color:var(--blue-600)">AB</div>
+                <div style="flex:1"><div style="font-size:13px;font-weight:500">ahmed.b@maroc.ma</div><div style="font-size:11px;color:var(--text-secondary)">15 juin 2026 · 10h32 — Source : Site web</div></div>
+                <span class="badge b-done">Résolu</span>
+              </div>
+              <div id="convMessages" style="flex:1;display:flex;flex-direction:column;gap:10px;font-size:12px;margin-bottom:12px;min-height:280px;overflow-y:auto">
+                <!-- Messages injectés via JS -->
+              </div>
+              <div style="padding-top:10px;border-top:0.5px solid var(--border);display:flex;gap:8px">
+                <input class="modal-input" type="text" placeholder="Répondre manuellement..." style="flex:1;padding:7px 10px">
+                <button class="btn btn-primary btn-sm"><i class="ti ti-send"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ONGLET FAQ -->
+        <div id="sup-faq" class="sup-panel" style="display:none">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <div style="font-size:13px;font-weight:600">Questions fréquentes — Base d'entraînement du chatbot</div>
+            <button class="btn btn-primary btn-sm" onclick="openModal('modalNewFaq')"><i class="ti ti-plus"></i> Ajouter une FAQ</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>#</th><th>Question</th><th>Réponse configurée</th><th>Déclenchements (7j)</th><th>Statut</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr><td style="color:var(--text-tertiary)">1</td><td>Quels sont vos délais d'installation ?</td><td style="color:var(--text-secondary);font-size:12px">Nos équipes s'engagent à installer votre stand en 24 à 72h selon la taille...</td><td>12</td><td><span class="badge b-done">Active</span></td><td><button class="btn btn-sm">Modifier</button></td></tr>
+                <tr><td style="color:var(--text-tertiary)">2</td><td>Vous intervenez dans quelle région ?</td><td style="color:var(--text-secondary);font-size:12px">Nous intervenons dans tout le Maroc : Casablanca, Rabat, Marrakech, Fès...</td><td>9</td><td><span class="badge b-done">Active</span></td><td><button class="btn btn-sm">Modifier</button></td></tr>
+                <tr><td style="color:var(--text-tertiary)">3</td><td>Comment obtenir un devis ?</td><td style="color:var(--text-secondary);font-size:12px">Remplissez notre formulaire de contact ou appelez le +212 5XX XXX XXX...</td><td>18</td><td><span class="badge b-done">Active</span></td><td><button class="btn btn-sm">Modifier</button></td></tr>
+                <tr><td style="color:var(--text-tertiary)">4</td><td>Proposez-vous la location de mobilier haut de gamme ?</td><td style="color:var(--text-secondary);font-size:12px">Oui, notre catalogue inclut mobilier cocktail, tables, chaises design, podiums...</td><td>7</td><td><span class="badge b-done">Active</span></td><td><button class="btn btn-sm">Modifier</button></td></tr>
+                <tr><td style="color:var(--text-tertiary)">5</td><td>Avez-vous des références dans le secteur bancaire ?</td><td style="color:var(--text-secondary);font-size:12px">Oui, nous avons accompagné Attijariwafa Bank, BCP, CIH Bank sur leurs événements...</td><td>5</td><td><span class="badge b-done">Active</span></td><td><button class="btn btn-sm">Modifier</button></td></tr>
+                <tr><td style="color:var(--text-tertiary)">6</td><td>Quel est le tarif pour un stand de 30m² ?</td><td style="color:var(--text-secondary);font-size:12px">Les tarifs varient selon les prestations. Un consultant vous contacte sous 24h...</td><td>11</td><td><span class="badge b-done">Active</span></td><td><button class="btn btn-sm">Modifier</button></td></tr>
+                <tr><td style="color:var(--text-tertiary)">7</td><td>Vous gérez la décoration florale ?</td><td style="color:var(--text-secondary);font-size:12px;color:var(--text-tertiary);font-style:italic">Non configuré</td><td>3</td><td><span class="badge b-gray">Brouillon</span></td><td><button class="btn btn-sm btn-primary">Configurer</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="margin-top:14px;background:var(--purple-50);border:0.5px solid var(--purple-200);border-radius:var(--radius-md);padding:12px 14px;font-size:12px;display:flex;align-items:center;gap:10px">
+            <i class="ti ti-sparkles" style="color:var(--purple-600);font-size:18px"></i>
+            <div><strong>Suggestion IA :</strong> 3 questions posées par des visiteurs n'ont pas de réponse configurée. L'IA a répondu de façon générique — souhaitez-vous créer des réponses précises ?</div>
+            <button class="btn btn-sm btn-primary" style="white-space:nowrap">Voir les questions</button>
+          </div>
+        </div>
+
+        <!-- ONGLET ARTICLES -->
+        <div id="sup-articles" class="sup-panel" style="display:none">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <div style="font-size:13px;font-weight:600">Base de connaissances — Articles et documents</div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-sm"><i class="ti ti-upload"></i> Importer un document</button>
+              <button class="btn btn-primary btn-sm"><i class="ti ti-plus"></i> Nouvel article</button>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+            <div class="card">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                <div style="width:34px;height:34px;background:var(--purple-50);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center"><i class="ti ti-file-text" style="color:var(--purple-600)"></i></div>
+                <div><div style="font-size:12px;font-weight:500">Présentation de l'entreprise</div><div style="font-size:10px;color:var(--text-tertiary)">Mis à jour : 10 juin 2026</div></div>
+              </div>
+              <div style="font-size:11px;color:var(--text-secondary);margin-bottom:10px">Histoire, valeurs, zones d'intervention, équipe, certifications et références clients.</div>
+              <div style="display:flex;gap:6px"><span class="badge b-done">Actif</span><span style="font-size:11px;color:var(--text-tertiary);margin-left:auto">Utilisé 24x</span></div>
+            </div>
+            <div class="card">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                <div style="width:34px;height:34px;background:var(--teal-50);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center"><i class="ti ti-list" style="color:var(--teal-600)"></i></div>
+                <div><div style="font-size:12px;font-weight:500">Catalogue des services</div><div style="font-size:10px;color:var(--text-tertiary)">Mis à jour : 1 juin 2026</div></div>
+              </div>
+              <div style="font-size:11px;color:var(--text-secondary);margin-bottom:10px">Stands, décoration, mobilier, scènes, logistique, animation — description complète et options.</div>
+              <div style="display:flex;gap:6px"><span class="badge b-done">Actif</span><span style="font-size:11px;color:var(--text-tertiary);margin-left:auto">Utilisé 41x</span></div>
+            </div>
+            <div class="card">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                <div style="width:34px;height:34px;background:var(--blue-50);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center"><i class="ti ti-trophy" style="color:var(--blue-600)"></i></div>
+                <div><div style="font-size:12px;font-weight:500">Références & Réalisations</div><div style="font-size:10px;color:var(--text-tertiary)">Mis à jour : 8 juin 2026</div></div>
+              </div>
+              <div style="font-size:11px;color:var(--text-secondary);margin-bottom:10px">40+ projets clients avec photos, descriptions et témoignages. Secteurs : bancaire, industrie, culture.</div>
+              <div style="display:flex;gap:6px"><span class="badge b-done">Actif</span><span style="font-size:11px;color:var(--text-tertiary);margin-left:auto">Utilisé 18x</span></div>
+            </div>
+            <div class="card">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                <div style="width:34px;height:34px;background:var(--amber-50);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center"><i class="ti ti-map-pin" style="color:var(--amber-600)"></i></div>
+                <div><div style="font-size:12px;font-weight:500">Zones d'intervention</div><div style="font-size:10px;color:var(--text-tertiary)">Mis à jour : 5 juin 2026</div></div>
+              </div>
+              <div style="font-size:11px;color:var(--text-secondary);margin-bottom:10px">Villes couvertes, délais d'intervention par région, partenaires locaux, tarifs déplacement.</div>
+              <div style="display:flex;gap:6px"><span class="badge b-done">Actif</span><span style="font-size:11px;color:var(--text-tertiary);margin-left:auto">Utilisé 15x</span></div>
+            </div>
+            <div class="card">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                <div style="width:34px;height:34px;background:var(--green-50);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center"><i class="ti ti-currency-dollar" style="color:var(--green-600)"></i></div>
+                <div><div style="font-size:12px;font-weight:500">Grille tarifaire indicative</div><div style="font-size:10px;color:var(--text-tertiary)">Mis à jour : 3 juin 2026</div></div>
+              </div>
+              <div style="font-size:11px;color:var(--text-secondary);margin-bottom:10px">Fourchettes de prix par type de prestation. Utilisé pour orienter les visiteurs sans divulguer les tarifs précis.</div>
+              <div style="display:flex;gap:6px"><span class="badge b-done">Actif</span><span style="font-size:11px;color:var(--text-tertiary);margin-left:auto">Utilisé 29x</span></div>
+            </div>
+            <div class="card" style="border-style:dashed;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;min-height:120px;cursor:pointer" onclick="openModal('modalNewArticle')">
+              <i class="ti ti-plus" style="font-size:24px;color:var(--text-tertiary)"></i>
+              <div style="font-size:12px;color:var(--text-tertiary)">Ajouter un article</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ONGLET CONFIG SUPPORT -->
+        <div id="sup-config-sup" class="sup-panel" style="display:none">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div>
+              <div class="card" style="margin-bottom:14px">
+                <div class="card-header"><div class="card-title"><i class="ti ti-robot"></i> Comportement du chatbot</div></div>
+                <div style="display:flex;flex-direction:column;gap:12px">
+                  <div><div class="modal-label" style="margin-bottom:5px">Nom de l'assistant</div><input class="modal-input" type="text" value="Yasmine — Assistante EventPro"></div>
+                  <div><div class="modal-label" style="margin-bottom:5px">Message d'accueil</div><textarea class="modal-input" style="min-height:70px">Bonjour ! Je suis Yasmine, votre assistante EventPro. Je peux vous renseigner sur nos services d'organisation événementielle, vous aider à obtenir un devis, ou répondre à vos questions. Comment puis-je vous aider ?</textarea></div>
+                  <div><div class="modal-label" style="margin-bottom:5px">Ton de communication</div><select class="modal-input"><option>Professionnel & chaleureux</option><option>Formel</option><option>Décontracté</option></select></div>
+                  <div><div class="modal-label" style="margin-bottom:5px">Langue(s) supportées</div><select class="modal-input"><option>Français + Arabe automatique</option><option>Français uniquement</option><option>Arabe uniquement</option></select></div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header"><div class="card-title"><i class="ti ti-arrow-up-circle"></i> Règles d'escalade</div></div>
+                <div style="display:flex;flex-direction:column;gap:8px;font-size:12px">
+                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" checked> Escalader si le visiteur demande un tarif précis</label>
+                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" checked> Escalader si demande d'appel téléphonique</label>
+                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" checked> Escalader si budget > 100 000 MAD mentionné</label>
+                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox"> Escalader après 3 échanges sans résolution</label>
+                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" checked> Créer automatiquement un lead CRM si email fourni</label>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="card" style="margin-bottom:14px">
+                <div class="card-header"><div class="card-title"><i class="ti ti-plug"></i> Intégration site web</div></div>
+                <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px">Code à intégrer dans le <code style="background:var(--bg-secondary);padding:2px 5px;border-radius:4px">&lt;/body&gt;</code> de votre site</div>
+                <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:12px;font-family:monospace;font-size:11px;color:var(--text-primary);line-height:1.6;margin-bottom:10px">&lt;script src="https://eventpro.ai/chatbot.js"<br>  data-token="ep_chat_xxxx"<br>  data-color="#534AB7"<br>  data-lang="fr"&gt;<br>&lt;/script&gt;</div>
+                <div style="display:flex;gap:8px">
+                  <button class="btn btn-sm" style="flex:1"><i class="ti ti-copy"></i> Copier le code</button>
+                  <button class="btn btn-sm" style="flex:1"><i class="ti ti-external-link"></i> Tester en live</button>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header"><div class="card-title"><i class="ti ti-bell"></i> Notifications</div></div>
+                <div style="display:flex;flex-direction:column;gap:8px;font-size:12px">
+                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" checked> Email si conversation escaladée</label>
+                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" checked> Notification si lead qualifié créé</label>
+                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox"> Résumé quotidien des conversations</label>
+                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" checked> Alerte si client insatisfait détecté</label>
+                </div>
+                <div style="margin-top:10px"><div class="modal-label" style="margin-bottom:5px">Email de notification</div><input class="modal-input" type="email" value="karim.alaoui@eventpro.ma"></div>
+                <button class="btn btn-primary btn-sm" style="margin-top:10px;width:100%"><i class="ti ti-check"></i> Enregistrer la configuration</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /support -->
+
+    </div><!-- /contentArea -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<script>
+const pages = {
+  dashboard:   { title: 'Vue générale',                  sub: 'Lundi 15 juin 2026 · Agents actifs' },
+  leads:       { title: 'Leads & Appels d\'offres',       sub: '23 opportunités qualifiées · 8 classées HOT' },
+  sodipresse:  { title: 'Sodipresse — Appels d\'offres',  sub: 'Connexion IMAP active · 14 AO événementiels ce mois' },
+  evenements:  { title: 'Événements détectés au Maroc',   sub: '23 événements à venir · Mis à jour cette nuit' },
+  concurrence: { title: 'Veille concurrentielle',         sub: '6 concurrents suivis · 3 alertes actives' },
+  technologie: { title: 'Veille technologique',           sub: '15 articles collectés cette semaine · 4 thématiques' },
+  assistant:   { title: 'Assistant IA',                   sub: 'Connecté à toutes les données · Réponse instantanée' },
+  social:      { title: 'Social Media',                   sub: '28 posts publiés ce mois · 5 planifiés' },
+  support:     { title: 'Support client — Site web',      sub: '38 conversations cette semaine · 89% résolues automatiquement' }
+};
+
+function showPage(id, el) {
+  document.querySelectorAll('.page-content').forEach(p => {
+    p.classList.remove('active');
+    p.style.display = 'none';
+  });
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  const page = document.getElementById('page-' + id);
+  if (page) {
+    if (id === 'assistant') {
+      page.style.display = 'flex';
+    } else {
+      page.style.display = 'block';
+    }
+    page.classList.add('active');
+  }
+  if (el) el.classList.add('active');
+
+  const info = pages[id];
+  if (info) {
+    document.getElementById('pageTitle').textContent = info.title;
+    document.getElementById('pageSub').textContent = '15 juin 2026 · ' + info.sub;
+  }
+
+  const contentArea = document.getElementById('contentArea');
+  if (id === 'assistant') {
+    contentArea.style.padding = '0';
+    contentArea.style.overflow = 'hidden';
+  } else {
+    contentArea.style.padding = '22px 24px';
+    contentArea.style.overflow = 'auto';
+  }
+  if (id === 'social') { setTimeout(renderCalendar, 50); }
+}
+
+function filterLeads(type, btn) {
+  btn.parentNode.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function setFilter(btn) {
+  btn.parentNode.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function openModal(id)  { document.getElementById(id).classList.add('open');  }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
+});
+
+function doSync() { openModal('modalSync'); }
+
+function toggleSyncAgent(row) {
+  const check = row.querySelector('.sync-agent-check');
+  check.classList.toggle('checked');
+}
+
+const syncScenarios = [
+  {
+    name: 'Agent Sodipresse',
+    icon: 'ti-file-search',
+    color: 'var(--purple-600)',
+    bg: 'var(--purple-50)',
+    steps: [
+      { text: 'Connexion à la boîte email IMAP…', delay: 600 },
+      { text: 'Lecture des emails non lus (7 nouveaux)…', delay: 1200 },
+      { text: 'Analyse et parsing du contenu…', delay: 2000 },
+      { text: 'Filtrage événementiel par mots-clés…', delay: 2800 },
+      { text: 'Scoring IA des 3 AO pertinents trouvés…', delay: 3600 },
+      { text: 'Enrichissement contacts…', delay: 4400 },
+    ],
+    result: { label: '3 nouveaux AO détectés', detail: '1 HOT (score 88) · 2 WARM · ajoutés au pipeline', badge: 'b-hot' }
+  },
+  {
+    name: 'Agent Veille événementielle',
+    icon: 'ti-calendar-search',
+    color: 'var(--teal-600)',
+    bg: 'var(--teal-50)',
+    steps: [
+      { text: 'Lancement des requêtes Google Search…', delay: 800 },
+      { text: 'Scan LinkedIn Events — Maroc…', delay: 1600 },
+      { text: 'Scraping Facebook Events…', delay: 2400 },
+      { text: 'Lecture flux RSS presse marocaine…', delay: 3200 },
+      { text: 'Déduplication et normalisation…', delay: 4000 },
+      { text: 'Classification IA et score opportunité…', delay: 4800 },
+    ],
+    result: { label: '2 nouveaux événements détectés', detail: 'Salon Auto Rabat (sept.) · Conférence FinTech Casa (août)', badge: 'b-done' }
+  },
+  {
+    name: 'Agent Veille concurrentielle',
+    icon: 'ti-eye',
+    color: 'var(--amber-600)',
+    bg: 'var(--amber-50)',
+    steps: [
+      { text: 'Scan LinkedIn des concurrents suivis…', delay: 700 },
+      { text: 'Vérification des AO en commun…', delay: 1500 },
+      { text: 'Analyse des nouvelles publications…', delay: 2300 },
+    ],
+    result: { label: 'Aucune alerte nouvelle', detail: 'Aucun concurrent détecté sur de nouveaux AO', badge: 'b-gray' }
+  },
+  {
+    name: 'Agent Veille technologique',
+    icon: 'ti-bulb',
+    color: 'var(--blue-600)',
+    bg: 'var(--blue-50)',
+    steps: [
+      { text: 'Lecture des flux RSS spécialisés…', delay: 900 },
+      { text: 'Scraping Event Manager Blog, Eventex…', delay: 1800 },
+      { text: 'Classification thématique des articles…', delay: 2700 },
+    ],
+    result: { label: '4 nouveaux articles', detail: 'LED interactive, IA en événementiel, Hologrammes 2026', badge: 'b-new' }
+  }
+];
+
+let syncResults = [];
+
+function startSync() {
+  // Find selected agents
+  const rows = document.querySelectorAll('.sync-agent-row');
+  const selected = [];
+  rows.forEach((row, i) => {
+    if (row.querySelector('.sync-agent-check.checked')) selected.push(syncScenarios[i]);
+  });
+  if (selected.length === 0) return;
+
+  // Switch to progress view
+  document.getElementById('syncSelectView').style.display = 'none';
+  document.getElementById('syncProgressView').style.display = 'block';
+  syncResults = [];
+
+  const list = document.getElementById('syncAgentsList');
+  list.innerHTML = '';
+
+  // Build agent progress blocks
+  selected.forEach((agent, idx) => {
+    const block = document.createElement('div');
+    block.id = 'sync-agent-' + idx;
+    block.style.cssText = 'border:0.5px solid var(--border);border-radius:var(--radius-md);overflow:hidden';
+    block.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg-secondary)">
+        <div style="width:28px;height:28px;border-radius:var(--radius-sm);background:${agent.bg};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ${agent.icon}" style="color:${agent.color};font-size:14px"></i>
+        </div>
+        <div style="flex:1;font-size:12px;font-weight:500">${agent.name}</div>
+        <div id="sync-status-${idx}" style="font-size:11px;color:var(--text-tertiary)">En attente…</div>
+      </div>
+      <div id="sync-log-${idx}" style="padding:8px 12px;font-size:11px;color:var(--text-secondary);min-height:28px;border-top:0.5px solid var(--border);display:none"></div>
+      <div id="sync-result-${idx}" style="display:none;padding:8px 12px;border-top:0.5px solid var(--border)"></div>`;
+    list.appendChild(block);
+  });
+
+  // Run agents sequentially
+  runAgent(selected, 0);
+}
+
+function runAgent(agents, idx) {
+  if (idx >= agents.length) {
+    showSyncSummary(agents);
+    return;
+  }
+  const agent = agents[idx];
+  const statusEl = document.getElementById('sync-status-' + idx);
+  const logEl    = document.getElementById('sync-log-' + idx);
+  const resultEl = document.getElementById('sync-result-' + idx);
+
+  statusEl.innerHTML = '<i class="ti ti-loader-2" style="animation:spin 1s linear infinite;display:inline-block"></i> En cours…';
+  statusEl.style.color = agent.color;
+  logEl.style.display = 'block';
+
+  // Run each step
+  agent.steps.forEach((step, si) => {
+    setTimeout(() => {
+      logEl.innerHTML = `<i class="ti ti-circle-dot" style="color:${agent.color};font-size:10px"></i> ${step.text}`;
+    }, step.delay);
+  });
+
+  const totalDuration = agent.steps[agent.steps.length - 1].delay + 800;
+
+  setTimeout(() => {
+    // Show result
+    statusEl.innerHTML = '<i class="ti ti-check"></i> Terminé';
+    statusEl.style.color = 'var(--green-teal)';
+    logEl.style.display = 'none';
+    resultEl.style.display = 'block';
+    resultEl.innerHTML = `<span class="badge ${agent.result.badge}" style="margin-right:8px">${agent.result.label}</span><span style="font-size:11px;color:var(--text-secondary)">${agent.result.detail}</span>`;
+    syncResults.push(agent.result);
+    // Start next agent after short pause
+    setTimeout(() => runAgent(agents, idx + 1), 400);
+  }, totalDuration);
+}
+
+function showSyncSummary(agents) {
+  const summary = document.getElementById('syncSummary');
+  const content = document.getElementById('syncSummaryContent');
+  const closeBtn = document.getElementById('syncCloseBtn');
+  summary.style.display = 'block';
+  closeBtn.style.display = 'inline-flex';
+
+  let html = '';
+  syncResults.forEach(r => {
+    html += `<div>✓ ${r.label} — <span style="opacity:.8">${r.detail}</span></div>`;
+  });
+  content.innerHTML = html;
+
+  // Update topbar
+  const lbl = document.getElementById('syncLabel');
+  if (lbl) lbl.textContent = 'Dernière sync : à l\'instant · ' + syncResults.filter(r => !r.label.includes('Aucun')).length + ' agents mis à jour';
+}
+
+function finishSync() {
+  closeModal('modalSync');
+  // Reset modal state for next time
+  setTimeout(() => {
+    document.getElementById('syncSelectView').style.display = 'block';
+    document.getElementById('syncProgressView').style.display = 'none';
+    document.getElementById('syncSummary').style.display = 'none';
+    document.getElementById('syncCloseBtn').style.display = 'none';
+    document.getElementById('syncAgentsList').innerHTML = '';
+    // Recheck first two agents
+    document.querySelectorAll('.sync-agent-check').forEach((c,i) => {
+      if (i < 2) c.classList.add('checked'); else c.classList.remove('checked');
+    });
+    const ind = document.getElementById('syncIndicator');
+    if (ind) ind.innerHTML = '<div class="pulse-dot"></div> Agents actifs';
+  }, 300);
+}
+
+const aiReplies = {
+  'leads hot': `Voici les <strong>8 leads HOT</strong> du jour :<br><br>
+🔴 <strong>92/100</strong> — Ministère de l'Industrie · Cérémonie remise de prix · Deadline : <strong>18 juin</strong><br>
+🔴 <strong>87/100</strong> — OCP Group · Stand Salon Automobile · Deadline : <strong>22 juin</strong><br>
+🔴 <strong>81/100</strong> — Royal Air Maroc · Conférence annuelle · Deadline : <strong>30 juin</strong><br><br>
+Je vous recommande de <strong>contacter le Ministère de l'Industrie en priorité</strong> — deadline dans 3 jours. Voulez-vous que je génère l'email ?`,
+
+  'ao sodipresse': `Analyse de cette nuit (02h14) :<br><br>
+📧 <strong>14 emails Sodipresse</strong> analysés<br>
+✅ <strong>5 AO identifiés</strong> comme événementiels<br>
+🔴 <strong>2 classés HOT</strong> : Ministère Industrie + RAM<br>
+🟡 <strong>3 classés WARM</strong> : Attijari, OCP, Région Casa<br><br>
+Mots-clés déclencheurs : <em>"organisation cérémonie"</em>, <em>"décoration événementielle"</em>, <em>"location mobilier"</em>`,
+
+  'evenements juillet': `Événements au Maroc en juillet 2026 :<br><br>
+📅 <strong>5–9 juillet</strong> — SIAM · Meknès · ~500 exposants 🟢 Opportunité majeure<br>
+📅 <strong>12–13 juillet</strong> — Festival Arts de la Rue · Casablanca<br>
+📅 <strong>20 juillet</strong> — Gala Championnat Football · Rabat<br><br>
+⭐ <strong>Recommandation</strong> : Le SIAM est l'événement prioritaire — 500 exposants potentiels à démarcher dès maintenant avant la saturation des prestataires.`,
+
+  'email': `Voici un brouillon pour l'AO du Ministère de l'Industrie :<br><br>
+<em>Objet : Candidature — Organisation Cérémonie Remise de Prix</em><br><br>
+Monsieur, Madame,<br>
+Nous avons pris connaissance de votre appel d'offres et souhaitons vous proposer notre expertise dans l'organisation d'événements institutionnels...<br><br>
+✅ <strong>Email généré et prêt à envoyer</strong> — souhaitez-vous que je l'ouvre pour révision ?`,
+
+  'concurrents': `Concurrents les plus actifs ce mois :<br><br>
+⚠️ <strong>EventStand Pro</strong> — détecté sur 3 AO communs · Présent au Salon Auto · 12 posts LinkedIn/mois<br>
+🟡 <strong>LogiEvent Casa</strong> — présent au Forum Emploi (même AO)<br>
+🟢 <strong>Deco Events Maroc</strong> — actif sur Instagram mais pas de chevauchement direct<br><br>
+💡 <strong>Action suggérée</strong> : Différenciez votre offre Salon Auto en mettant en avant vos références grandes entreprises.`,
+
+  'pipeline': `État du pipeline commercial au 15 juin 2026 :<br><br>
+📥 <strong>47</strong> leads détectés · <strong>23</strong> qualifiés · <strong>15</strong> contactés<br>
+🤝 <strong>7</strong> en négociation · <strong>5</strong> gagnés<br>
+💰 Valeur pipeline estimée : <strong>1 240 000 MAD</strong><br>
+📈 Taux de conversion : <strong>31%</strong> (+4 pts vs mois dernier)`
+};
+
+function sendChat(text) {
+  const container = document.getElementById('chatMessages');
+
+  const userWrap = document.createElement('div');
+  userWrap.className = 'msg-wrap user';
+  userWrap.innerHTML = `<div class="msg-sender">Aziz Bouslamati</div><div class="msg-bubble msg-user-b">${text}</div>`;
+  container.appendChild(userWrap);
+
+  container.scrollTop = container.scrollHeight;
+
+  setTimeout(() => {
+    const key = Object.keys(aiReplies).find(k => text.toLowerCase().includes(k));
+    const reply = key ? aiReplies[key] : `Je recherche dans la base de données...<br><br>J'ai trouvé <strong>3 résultats</strong> correspondant à "<em>${text}</em>". Souhaitez-vous que je détaille ?`;
+
+    const aiWrap = document.createElement('div');
+    aiWrap.className = 'msg-wrap ai';
+    aiWrap.innerHTML = `<div class="msg-sender"><i class="ti ti-robot"></i> Assistant EventPro IA</div><div class="msg-bubble msg-ai-b">${reply}</div>`;
+    container.appendChild(aiWrap);
+    container.scrollTop = container.scrollHeight;
+  }, 700);
+}
+
+function sendQuick(text) {
+  showPage('assistant', document.querySelector('[onclick*=assistant]'));
+  setTimeout(() => sendChat(text), 50);
+}
+
+function sendFromInput() {
+  const input = document.getElementById('chatInput');
+  if (input.value.trim()) {
+    sendChat(input.value.trim());
+    input.value = '';
+  }
+}
+
+// Init
+document.querySelectorAll('.page-content').forEach(p => { p.style.display = 'none'; });
+document.getElementById('page-dashboard').style.display = 'block';
+document.getElementById('page-dashboard').classList.add('active');
+
+// Generic tab switcher for Sodipresse & Événements
+function showTab(prefix, id, btn) {
+  // hide all panels with this prefix
+  ['ao','config','flux','liste'].forEach(p => {
+    const el = document.getElementById(prefix + '-' + p);
+    if (el) el.style.display = 'none';
+  });
+  // show target
+  const target = document.getElementById(prefix + '-' + id);
+  if (target) target.style.display = 'block';
+  // update tab styles — find parent tabs container
+  if (btn) {
+    const siblings = btn.parentNode.querySelectorAll('.sm-tab');
+    siblings.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+}
+
+// SM TABS
+function showSMTab(id, btn) {
+  document.querySelectorAll('.sm-panel').forEach(p => p.style.display = 'none');
+  // only reset tabs inside the social page
+  const socialPage = document.getElementById('page-social');
+  if (socialPage) socialPage.querySelectorAll('.sm-tab').forEach(b => b.classList.remove('active'));
+  const el = document.getElementById('sm-' + id);
+  if (el) el.style.display = 'block';
+  if (btn) btn.classList.add('active');
+  if (id === 'calendrier') renderCalendar();
+}
+
+// SUPPORT TABS
+function showSupTab(id, btn) {
+  document.querySelectorAll('.sup-panel').forEach(p => p.style.display = 'none');
+  const supPage = document.getElementById('page-support');
+  if (supPage) supPage.querySelectorAll('.sm-tab').forEach(b => b.classList.remove('active'));
+  const el = document.getElementById('sup-' + id);
+  if (el) el.style.display = 'block';
+  if (btn) btn.classList.add('active');
+}
+
+// CALENDAR — Monthly view
+let monthOffset = 0;
+const monthNames = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+const monthlyPosts = {
+  '0-2':  [{net:'li',text:'Lancement offre GITEX 2026',planned:false}],
+  '0-4':  [{net:'ig',text:'Coulisses Forum Dirigeants',planned:false}],
+  '0-8':  [{net:'fb',text:'Devis gratuit en 24h',planned:false},{net:'li',text:'5 conseils pour réussir votre stand',planned:false}],
+  '0-10': [{net:'ig',text:'Before/After stand industrie',planned:false}],
+  '0-12': [{net:'li',text:'Référence client : Attijariwafa Bank',planned:false}],
+  '0-15': [{net:'li',text:'Fiers d\'avoir accompagné Attijariwafa Bank',planned:false},{net:'ig',text:'Scénographie Gala de fin d\'année',planned:false}],
+  '0-17': [{net:'li',text:'GITEX Africa approche — slots disponibles',planned:true},{net:'ig',text:'Notre équipe au Salon Auto',planned:true}],
+  '0-18': [{net:'fb',text:'Offre spéciale événements été 2026',planned:true}],
+  '0-20': [{net:'ig',text:'Mobilier haut de gamme — catalogue 2026',planned:true}],
+  '0-22': [{net:'li',text:'Conseils stand salon professionnel',planned:false}],
+  '0-24': [{net:'fb',text:'Témoignage client — OCP Group',planned:true}],
+  '0-27': [{net:'li',text:'J-1 GITEX Africa — notre équipe prête',planned:true}],
+  '0-28': [{net:'ig',text:'GITEX Africa — Live de Marrakech !',planned:true},{net:'x',text:'Live GITEX Africa 2026',planned:true}],
+  '0-30': [{net:'li',text:'GITEX Africa — retour d\'expérience',planned:true}],
+  '1-5':  [{net:'li',text:'SIAM Meknès — Nous y serons !',planned:true}],
+  '1-8':  [{net:'ig',text:'Installation stand SIAM — Live',planned:true}],
+  '1-12': [{net:'fb',text:'Festival Arts de la Rue — Casablanca',planned:true}],
+  '1-15': [{net:'li',text:'Bilan SIAM 2026 — Record de contacts',planned:true}],
+  '1-20': [{net:'ig',text:'Gala Football — Décoration de prestige',planned:true}],
+};
+
+function renderCalendar() {
+  const grid = document.getElementById('calGrid');
+  if (!grid) return;
+  const targetDate = new Date(2026, 5 + monthOffset, 1);
+  const year = targetDate.getFullYear();
+  const month = targetDate.getMonth();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const firstDayOfWeek = (new Date(year, month, 1).getDay() + 6) % 7;
+  const lbl = document.getElementById('weekLabel');
+  if (lbl) lbl.textContent = monthNames[month] + ' ' + year;
+  const days = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+  const NET = {
+    li:{bg:'#dbeeff',col:'#005fa3',icon:'ti-brand-linkedin'},
+    ig:{bg:'#ffd6e7',col:'#a81145',icon:'ti-brand-instagram'},
+    fb:{bg:'#d6e8ff',col:'#1246a0',icon:'ti-brand-facebook'},
+    x :{bg:'#e8e8e8',col:'#222',   icon:'ti-brand-x'},
+  };
+  let html = '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px">';
+  days.forEach(d => {
+    html += `<div style="text-align:center;padding:4px 2px;font-size:10px;font-weight:600;color:var(--text-secondary);background:var(--bg-secondary);border-radius:4px">${d}</div>`;
+  });
+  for (let i = 0; i < firstDayOfWeek; i++) {
+    html += `<div style="min-height:82px;background:var(--bg-secondary);border-radius:5px;opacity:.3"></div>`;
+  }
+  for (let day = 1; day <= daysInMonth; day++) {
+    const key    = monthOffset + '-' + day;
+    const posts  = monthlyPosts[key] || [];
+    const today  = monthOffset === 0 && day === 15;
+    const past   = monthOffset === 0 && day < 15;
+    const cellBg = today ? '#EEEDFE' : past ? '#f5f4f0' : '#fff';
+    const numCol = today ? '#534AB7' : past ? '#aaa' : '#1a1918';
+    const cellBorder = today ? 'border:1.5px solid #534AB7;' : 'border:0.5px solid rgba(0,0,0,.09);';
+    html += `<div style="min-height:82px;padding:4px;border-radius:5px;background:${cellBg};${cellBorder}">`;
+    html += `<div style="font-size:11px;font-weight:600;color:${numCol};text-align:right;margin-bottom:2px">${day}</div>`;
+    posts.forEach(p => {
+      const n = NET[p.net] || {bg:'#eee',col:'#555',icon:'ti-social'};
+      const pillBg  = p.planned ? 'transparent' : n.bg;
+      const pillBdr = p.planned ? `border:1px dashed ${n.col};` : '';
+      html += `<div style="background:${pillBg};${pillBdr}color:${n.col};border-radius:3px;padding:2px 3px;margin-bottom:2px;font-size:8.5px;display:flex;align-items:center;gap:2px;overflow:hidden;cursor:pointer" title="${p.text}">
+        <i class="ti ${n.icon}" style="font-size:8px;flex-shrink:0"></i>
+        <span style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${p.text.length>19?p.text.slice(0,18)+'…':p.text}</span>
+      </div>`;
+    });
+    if (!past) {
+      html += `<div onclick="openModal('modalNewPost')" style="color:#aaa;font-size:8px;cursor:pointer;display:flex;align-items:center;gap:1px;margin-top:1px"><i class="ti ti-plus" style="font-size:8px"></i></div>`;
+    }
+    html += '</div>';
+  }
+  const rem = (firstDayOfWeek + daysInMonth) % 7;
+  const trail = rem === 0 ? 0 : 7 - rem;
+  for (let i = 0; i < trail; i++) {
+    html += `<div style="min-height:82px;background:var(--bg-secondary);border-radius:5px;opacity:.3"></div>`;
+  }
+  html += '</div>';
+  html += `<div style="display:flex;align-items:center;gap:12px;margin-top:10px;font-size:11px;color:var(--text-secondary);flex-wrap:wrap">
+    <span style="font-weight:500">Légende :</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:#dbeeff;display:inline-block;border:0.5px solid rgba(0,0,0,.1)"></span>LinkedIn</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:#ffd6e7;display:inline-block;border:0.5px solid rgba(0,0,0,.1)"></span>Instagram</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:#d6e8ff;display:inline-block;border:0.5px solid rgba(0,0,0,.1)"></span>Facebook</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:#e8e8e8;display:inline-block;border:0.5px solid rgba(0,0,0,.1)"></span>X</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;border:1px dashed #999;display:inline-block"></span>Planifié</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:#534AB7;display:inline-block"></span>Aujourd'hui</span>
+  </div>`;
+  grid.innerHTML = html;
+}
+
+function changeWeek(dir) {
+  monthOffset = Math.max(0, monthOffset + dir);
+  renderCalendar();
+}
+
+function generateCalendar() {
+  closeModal('modalIdeaGen');
+  const firstTab = document.querySelector('#page-social .sm-tab');
+  showSMTab('calendrier', firstTab);
+  setTimeout(() => {
+    monthlyPosts['0-19'] = [{net:'li',text:'SIAM — 5 conseils stand agricole',planned:true}];
+    monthlyPosts['0-23'] = [{net:'ig',text:'Notre équipe disponible cet été',planned:true}];
+    monthlyPosts['0-26'] = [{net:'fb',text:'Catalogue mobilier disponible',planned:true}];
+    renderCalendar();
+    const banner = document.createElement('div');
+    banner.className = 'info-banner'; banner.style.marginBottom = '14px';
+    banner.innerHTML = '<i class="ti ti-sparkles" style="color:var(--purple-600)"></i><div style="flex:1"><strong>Plan éditorial généré !</strong> L\'IA a ajouté 3 posts supplémentaires sur juin, basés sur le GITEX, le SIAM et vos réalisations.</div>';
+    const panel = document.getElementById('sm-calendrier');
+    if (panel) panel.insertBefore(banner, panel.firstChild);
+    setTimeout(() => { if (banner.parentNode) banner.remove(); }, 4000);
+  }, 300);
+}
+function generatePost() {
+  const idea = document.getElementById('ideaInput').value.trim();
+  const network = document.getElementById('ideaNetwork').value;
+  const tone = document.getElementById('ideaTone').value;
+  const preview = document.getElementById('previewContent');
+  if (!idea) { preview.innerHTML = '<span style="color:var(--coral-400)">Veuillez saisir une idée d\'abord.</span>'; return; }
+
+  preview.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--text-secondary)"><i class="ti ti-loader-2 ti-spin" style="font-size:28px;color:var(--purple-600)"></i><span style="font-size:12px">Génération en cours...</span></div>';
+
+  const netIcon = {LinkedIn:'ti-brand-linkedin',Instagram:'ti-brand-instagram','Facebook':'ti-brand-facebook','X (Twitter)':'ti-brand-x','Tous les réseaux':'ti-social'};
+  const netColor = {LinkedIn:'#0077B5',Instagram:'#E4405F','Facebook':'#1877F2','X (Twitter)':'#111','Tous les réseaux':'var(--purple-600)'};
+
+  const texts = {
+    'gitex': '🚀 GITEX Africa 2026 s\'installe à Marrakech — et nous y serons ! Notre équipe est disponible pour concevoir et installer votre stand en 72h. Des lignes épurées, un impact maximal. Contactez-nous dès maintenant, les créneaux se remplissent vite ! ✨',
+    'ocp': '🏆 Mission accomplie ! Notre équipe vient de finaliser l\'installation du stand OCP Group pour le Salon de l\'Automobile. 180m² de scénographie soignée, mobilier haut de gamme, identité visuelle respectée à la perfection. Fiers de ce partenariat ! 💪',
+    'location': '✨ Vous organisez un événement ? Découvrez notre catalogue de mobilier événementiel haut de gamme : tables cocktail, chaises design, comptoirs d\'accueil, podiums... Livraison et installation dans tout le Maroc sous 24h. Demandez votre devis gratuit ! 🎯',
+    'siam': '📅 Le SIAM arrive ! Le Salon International de l\'Agriculture de Meknès, c\'est dans 20 jours. Vous exposez ? Nous concevons et installons votre stand clé en main. Nos équipes sont disponibles — ne tardez pas ! 🌿',
+  };
+
+  const defaultText = `🎯 ${idea.charAt(0).toUpperCase() + idea.slice(1)}. Notre expertise au service de votre image — des stands qui marquent les esprits, une scénographie qui vous représente. Contactez-nous pour en savoir plus ! ✨`;
+
+  const key = Object.keys(texts).find(k => idea.toLowerCase().includes(k));
+  const generated = key ? texts[key] : defaultText;
+
+  setTimeout(() => {
+    preview.innerHTML = `
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:0.5px solid var(--border)">
+          <i class="ti ${netIcon[network]||'ti-social'}" style="font-size:20px;color:${netColor[network]||'#534AB7'}"></i>
+          <span style="font-size:12px;font-weight:500">${network}</span>
+          <span class="badge b-new" style="margin-left:auto;font-size:10px"><i class="ti ti-sparkles"></i> Généré par IA</span>
+        </div>
+        <div style="background:var(--bg-secondary);border-radius:var(--radius-md);height:110px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;color:var(--text-tertiary);font-size:12px;border:0.5px dashed var(--border-md)">
+          <div style="text-align:center"><i class="ti ti-photo" style="font-size:28px;display:block;margin-bottom:4px;color:var(--purple-200)"></i>Image IA en génération...</div>
+        </div>
+        <div style="font-size:13px;line-height:1.7;margin-bottom:10px;color:var(--text-primary)">${generated}</div>
+        <div style="font-size:11px;color:var(--purple-600);margin-bottom:12px">#EventProMaroc #Événementiel #Stand #Maroc</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-sm" style="flex:1" onclick="openModal('modalNewPost')"><i class="ti ti-calendar"></i> Planifier</button>
+          <button class="btn btn-primary btn-sm" style="flex:1"><i class="ti ti-send"></i> Publier</button>
+        </div>
+      </div>`;
+  }, 1400);
+}
+
+function fillIdea(el) {
+  const title = el.querySelector('.idea-title').textContent;
+  const sub = el.querySelector('.idea-sub').textContent;
+  const network = sub.split('·')[0].trim();
+  document.getElementById('ideaInput').value = title;
+  const sel = document.getElementById('ideaNetwork');
+  for (let o of sel.options) { if (o.value === network) sel.value = network; }
+}
+
+// CONVERSATIONS
+const conversations = [
+  {
+    user:'ahmed.b@maroc.ma', avatar:'AB', color:'var(--blue-50)', textColor:'var(--blue-600)', date:'15 juin · 10h32', status:'Résolu',
+    msgs:[
+      {from:'bot',text:'Bonjour ! Je suis Yasmine, votre assistante EventPro. Comment puis-je vous aider ?'},
+      {from:'user',text:'Vous intervenez à Marrakech pour le GITEX ?'},
+      {from:'bot',text:'Oui, absolument ! Pour GITEX Africa (28–30 juin à Marrakech), nous proposons la conception, installation et gestion complète de stands. Souhaitez-vous un devis ?'},
+      {from:'user',text:'Oui pour un stand de 30m²'},
+      {from:'bot',text:'Parfait ! Laissez-moi votre email ou numéro de téléphone et un consultant vous rappelle sous 24h avec une estimation personnalisée. 📋'},
+      {from:'user',text:'ahmed.b@maroc.ma'},
+      {from:'bot',text:'Merci ! Votre demande a été transmise à notre équipe. Vous serez contacté très prochainement. Bonne journée ! 😊'},
+    ]
+  },
+  {
+    user:'sara.k@agence.ma', avatar:'SK', color:'var(--coral-50)', textColor:'var(--coral-600)', date:'15 juin · 09h15', status:'Résolu',
+    msgs:[
+      {from:'bot',text:'Bonjour ! Je suis Yasmine. Comment puis-je vous aider ?'},
+      {from:'user',text:'Avez-vous des références dans le secteur bancaire ?'},
+      {from:'bot',text:'Oui, nous avons accompagné plusieurs grandes banques marocaines : Attijariwafa Bank (Forum des Dirigeants 2026), BCP (Gala annuel), CIH Bank (inauguration siège). Souhaitez-vous voir notre book de références ?'},
+      {from:'user',text:'Oui s\'il vous plaît'},
+      {from:'bot',text:'Je vous envoie le lien vers notre portfolio secteur bancaire : [eventpro.ma/references/banque]. N\'hésitez pas si vous avez d\'autres questions !'},
+    ]
+  },
+  {
+    user:'Visiteur anonyme', avatar:'??', color:'var(--amber-50)', textColor:'var(--amber-600)', date:'14 juin · 16h44', status:'Escaladé',
+    msgs:[
+      {from:'bot',text:'Bonjour ! Je suis Yasmine. Comment puis-je vous aider ?'},
+      {from:'user',text:'Quel est le tarif pour location mobilier 200 personnes ?'},
+      {from:'bot',text:'Pour un événement de 200 personnes, nos prestations mobilier démarrent généralement à partir de 25 000 MAD. Pour un devis précis adapté à vos besoins...'},
+      {from:'user',text:'Je veux le prix exact maintenant'},
+      {from:'bot',text:'Je comprends votre besoin. Cette demande nécessite une estimation personnalisée — je transmets votre conversation à notre équipe commerciale qui vous répondra dans l\'heure. 🔔'},
+      {from:'sys',text:'⚡ Conversation escaladée vers Aziz Bouslamati à 16h52'},
+    ]
+  },
+  {
+    user:'m.ouali@enterprise.ma', avatar:'MO', color:'var(--green-50)', textColor:'var(--green-600)', date:'14 juin · 11h20', status:'Résolu · Lead créé',
+    msgs:[
+      {from:'bot',text:'Bonjour ! Je suis Yasmine. Comment puis-je vous aider ?'},
+      {from:'user',text:'Quel est votre délai pour installer un stand de 50m² ?'},
+      {from:'bot',text:'Pour un stand de 50m², notre équipe intervient généralement en 48 à 72h selon la complexité de l\'installation. Pour les événements avec contrainte de temps, nous proposons un service express 24h. Quel est votre événement ?'},
+      {from:'user',text:'Le SIAM à Meknès début juillet'},
+      {from:'bot',text:'Parfait ! Nous avons de l\'expérience sur le SIAM. Laissez-moi votre email pour qu\'un consultant vous prépare une offre sur mesure.'},
+      {from:'user',text:'m.ouali@enterprise.ma'},
+      {from:'bot',text:'Merci ! Un lead a été créé dans notre CRM. Notre équipe vous contacte dans la journée. 👍'},
+      {from:'sys',text:'✅ Lead CRM créé automatiquement : m.ouali@enterprise.ma — SIAM Meknès — Stand 50m²'},
+    ]
+  },
+  {
+    user:'f.hassani@bank.ma', avatar:'FH', color:'var(--bg-secondary)', textColor:'var(--text-primary)', date:'13 juin · 14h05', status:'Résolu',
+    msgs:[
+      {from:'bot',text:'Bonjour ! Je suis Yasmine. Comment puis-je vous aider ?'},
+      {from:'user',text:'Comment demander un devis ?'},
+      {from:'bot',text:'Vous pouvez demander un devis de 3 façons : 1️⃣ Via notre formulaire sur eventpro.ma/devis · 2️⃣ En m\'écrivant ici votre besoin · 3️⃣ En appelant le +212 5XX XXX XXX. Quelle option vous convient ?'},
+      {from:'user',text:'Je préfère le formulaire'},
+      {from:'bot',text:'Voici le lien direct : eventpro.ma/devis — Le formulaire prend 2 minutes et vous recevrez un retour sous 24h. Bonne journée ! 😊'},
+    ]
+  }
+];
+
+function showConv(idx, el) {
+  document.querySelectorAll('.conv-item').forEach(c => c.classList.remove('active-conv'));
+  el.classList.add('active-conv');
+  const c = conversations[idx];
+  document.getElementById('convHeader').innerHTML = `
+    <div class="avatar" style="background:${c.color};color:${c.textColor}">${c.avatar}</div>
+    <div style="flex:1"><div style="font-size:13px;font-weight:500">${c.user}</div><div style="font-size:11px;color:var(--text-secondary)">${c.date} — Source : Site web</div></div>
+    <span class="badge ${c.status.includes('Escaladé')?'b-hot':'b-done'}">${c.status}</span>`;
+  const msgs = document.getElementById('convMessages');
+  msgs.innerHTML = c.msgs.map(m => {
+    if (m.from === 'sys') return `<div style="text-align:center;font-size:10px;color:var(--text-tertiary);padding:4px 0;background:var(--bg-secondary);border-radius:var(--radius-sm);padding:4px 8px">${m.text}</div>`;
+    const isUser = m.from === 'user';
+    return `<div style="display:flex;${isUser?'justify-content:flex-end':''}">
+      <div style="max-width:85%;padding:8px 12px;border-radius:${isUser?'12px 12px 4px 12px':'4px 12px 12px 12px'};font-size:12px;line-height:1.6;
+        ${isUser?'background:var(--purple-600);color:#fff':'background:var(--bg-secondary);color:var(--text-primary)'}">
+        ${m.text}
+      </div>
+    </div>`;
+  }).join('');
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// Init first conversation
+setTimeout(() => {
+  showConv(0, document.querySelector('.conv-item'));
+  renderCalendar();
+}, 100);
+</script>
+</body>
+</html>
